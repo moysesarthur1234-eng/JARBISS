@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050812">
+<title>JARBISS | Personal AI</title>
+<style>
+:root {
+  --bg:#050812;
+  --panel:rgba(13,22,40,.82);
+  --panel2:#0b1425;
+  --line:rgba(55,171,255,.2);
+  --blue:#27c9ff;
+  --cyan:#85efff;
+  --text:#edf8ff;
+  --muted:#7d91ad;
+  --green:#6dffbd;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  background:
+    radial-gradient(ellipse at 50% -15%,#123c66 0,transparent 48%),
+    radial-gradient(ellipse at 100% 65%,#10234455,transparent 45%),
+    var(--bg);
+  font-family:"Segoe UI",Arial,sans-serif;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;
+  background-image:linear-gradient(#2caeff12 1px,transparent 1px),
+    linear-gradient(90deg,#2caeff12 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:linear-gradient(to bottom,#000,transparent 85%);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+  height:76px;padding:0 5%;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
+  border-bottom:1px solid var(--line);
+  background:#060b16dd;backdrop-filter:blur(18px);
+  position:relative;z-index:2;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:39px;height:39px;border:1px solid var(--blue);
+  border-radius:12px;display:grid;place-items:center;
+  color:var(--cyan);font-size:23px;
+  box-shadow:0 0 22px #27c9ff20,inset 0 0 15px #27c9ff16;
+}
+.logo{font-weight:850;letter-spacing:4px;font-size:20px}
+.logo span{color:var(--blue)}
+.brand-sub{font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:4px}
+.top-right{display:flex;align-items:center;gap:12px}
+.status-pill{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border:1px solid var(--line);border-radius:30px;
+  color:var(--muted);font-size:10px;letter-spacing:1px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 10px #6dffbd}
+main{max-width:1420px;margin:auto;padding:28px 28px 36px}
+.welcome{margin-bottom:25px}
+.eyebrow{font-size:10px;color:var(--blue);letter-spacing:3px}
+h1{font-size:clamp(27px,4vw,40px);margin:10px 0 8px;letter-spacing:-1px}
+.subtitle{font-size:13px;color:var(--muted);line-height:1.6}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px}
+.panel{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(145deg,#101d32d9,#080f1ddd);
+  box-shadow:0 18px 55px #0002;backdrop-filter:blur(18px);
+}
+.sidebar{padding:20px;align-self:start}
+.section-label{font-size:10px;letter-spacing:2px;color:var(--blue);margin-bottom:17px}
+.core-wrap{display:grid;place-items:center;padding:18px 0 23px}
+.core{
+  width:142px;height:142px;border-radius:50%;display:grid;place-items:center;
+  position:relative;
+  background:radial-gradient(circle,#164a70 0,#0b2039 48%,#081020 72%);
+  border:1px solid #41d9ff8a;
+  box-shadow:0 0 30px #13bfff24,inset 0 0 28px #13bfff24;
+  animation:breathe 4s ease-in-out infinite;
+}
+.core:before,.core:after{
+  content:"";position:absolute;border-radius:50%;pointer-events:none
+}
+.core:before{inset:-10px;border:1px dashed #39cfffaa;animation:spin 22s linear infinite}
+.core:after{inset:10px;border:1px solid #49dfff55;box-shadow:0 0 18px #27c9ff15}
+.core-inner{
+  width:76px;height:76px;border:1px solid #7ae9ff88;
+  transform:rotate(45deg);display:grid;place-items:center;
+  box-shadow:0 0 25px #27c9ff20;
+}
+.core-symbol{transform:rotate(-45deg);font-size:38px;color:var(--cyan);
+  text-shadow:0 0 20px var(--blue)}
+.core-caption{text-align:center;font-size:9px;letter-spacing:2px;color:var(--cyan)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{50%{box-shadow:0 0 52px #13bfff40,inset 0 0 36px #13bfff35}}
+.metrics{border-top:1px solid var(--line);margin-top:8px}
+.metric{padding:13px 0;border-bottom:1px solid #24375077}
+.metric:last-child{border:0}
+.metric small{display:block;font-size:10px;color:var(--muted);margin-bottom:6px}
+.metric strong{font-size:12px;font-weight:500}
+.metric strong:before{content:"";display:inline-block;width:5px;height:5px;
+  border-radius:50%;background:var(--blue);margin:0 8px 2px 0}
+.shortcuts{margin-top:18px;display:grid;gap:8px}
+.shortcut{
+  border:1px solid #28405a;border-radius:10px;padding:11px;
+  background:#0b1628;color:#c5deef;text-align:left;font-size:11px;
+}
+.shortcut:hover{border-color:var(--blue);color:var(--cyan)}
+.chat{min-width:0;min-height:610px;display:flex;flex-direction:column;overflow:hidden}
+.chat-head{
+  padding:19px 22px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.chat-title{font-size:11px;letter-spacing:2px}
+.chat-sub{font-size:10px;color:var(--muted);margin-top:5px}
+.chip{font-size:9px;letter-spacing:1px;color:var(--cyan);
+  border:1px solid #27c9ff44;padding:7px 9px;border-radius:7px}
+.messages{
+  flex:1;min-height:280px;max-height:470px;overflow-y:auto;
+  padding:22px;scroll-behavior:smooth
+}
+.message{
+  max-width:88%;margin-bottom:17px;padding:14px 16px;
+  border-radius:13px;font-size:13px;line-height:1.7;
+  white-space:pre-wrap;overflow-wrap:anywhere
+}
+.bot{background:linear-gradient(120deg,#11263d,#0b1728);
+  border:1px solid #23445d;border-left:2px solid var(--blue);margin-right:auto}
+.user{background:linear-gradient(120deg,#12314a,#10263a);
+  border:1px solid #236080;border-right:2px solid var(--green);margin-left:auto}
+.label{font-size:9px;letter-spacing:2px;color:var(--cyan);margin-bottom:7px}
+.user .label{color:var(--green);text-align:right}
+.composer-wrap{padding:16px 20px 20px;border-top:1px solid var(--line);background:#080f1bcc}
+.composer{
+  display:flex;gap:9px;padding:7px;border:1px solid #29445f;
+  border-radius:13px;background:#050c18;align-items:center
+}
+.composer:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px #27c9ff0c}
+input{
+  flex:1;min-width:0;background:transparent;border:0;outline:0;
+  color:var(--text);padding:10px;font-size:13px
+}
+input::placeholder{color:#657c96}
+.send,.voice-button{
+  border:1px solid #38d8ff66;border-radius:9px;
+  padding:11px 14px;background:linear-gradient(135deg,#43d8ff,#16a9ec);
+  color:#03111d;font-size:10px;font-weight:850;letter-spacing:1px
+}
+.send:disabled{opacity:.5;cursor:wait}
+.voice-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.voice-button{background:#0d2032;color:var(--cyan);border-color:#24506b}
+.voice-button.active{background:#10392f;color:var(--green);border-color:#347b63}
+.hint{font-size:10px;color:var(--muted);line-height:1.5}
+footer{text-align:center;color:#526b86;font-size:9px;letter-spacing:2px;padding:0 12px 24px}
+@media(min-width:1100px){
+  .layout{grid-template-columns:280px minmax(0,1fr)}
+  .messages{padding:28px}
+}
+@media(max-width:760px){
+  header{height:67px;padding:0 16px}
+  .logo{font-size:17px;letter-spacing:3px}
+  .brand-sub{font-size:8px}
+  .brand-mark{width:34px;height:34px}
+  .status-pill{font-size:9px;padding:8px}
+  main{padding:23px 13px 26px}
+  .welcome{margin-bottom:18px}
+  .layout{grid-template-columns:1fr;gap:13px}
+  .sidebar{padding:14px}
+  .core-wrap{padding:14px 0 18px}
+  .core{width:110px;height:110px}
+  .core-inner{width:61px;height:61px}
+  .core-symbol{font-size:31px}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  .metric{padding:11px 0}
+  .shortcuts{grid-template-columns:1fr 1fr}
+  .chat{min-height:470px}
+  .chat-head{padding:15px}
+  .messages{padding:16px 12px;min-height:240px;max-height:390px}
+  .message{max-width:94%;font-size:13px;padding:12px}
+  .composer-wrap{padding:12px}
+  .send{padding:11px 12px}
+  .voice-row{align-items:flex-start;flex-direction:column}
+  .voice-button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="brand-mark">✳</div>
+    <div>
+      <div class="logo">JAR<span>BISS</span></div>
+      <div class="brand-sub">PERSONAL INTELLIGENCE</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="status-pill"><span class="dot"></span><span id="topStatus">SISTEMA ONLINE</span></div>
+  </div>
+</header>
+
+<main>
+  <section class="welcome">
+    <div class="eyebrow">◈ PERSONAL AI SYSTEM / V1</div>
+    <h1>Central de comando<span style="color:var(--blue)">.</span></h1>
+    <div class="subtitle">Sua inteligência pessoal. Um novo nível de possibilidades.</div>
+  </section>
+
+  <section class="layout">
+    <aside class="panel sidebar">
+      <div class="section-label">◈ NÚCLEO DO SISTEMA</div>
+      <div class="core-wrap">
+        <div>
+          <div class="core">
+            <div class="core-inner"><div class="core-symbol">✳</div></div>
+          </div>
+          <div class="core-caption" style="margin-top:20px">JARBISS CORE / ACTIVE</div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><small>Interface</small><strong>Operacional</strong></div>
+        <div class="metric"><small>Conexão com IA</small><strong id="serverStatus">Verificando...</strong></div>
+        <div class="metric"><small>Assistente</small><strong>JARBISS AI</strong></div>
+        <div class="metric"><small>Sistema de voz</small><strong id="voiceStatus">Desativado</strong></div>
+      </div>
+      <div class="section-label" style="margin:20px 0 10px">◈ ACESSO RÁPIDO</div>
+      <div class="shortcuts">
+        <button class="shortcut" type="button" id="focusShortcut">⌕ Nova mensagem</button>
+        <button class="shortcut" type="button" id="voiceShortcut">♫ Configurar voz</button>
+      </div>
+    </aside>
+
+    <section class="panel chat">
+      <div class="chat-head">
+        <div>
+          <div class="chat-title">CANAL DE COMUNICAÇÃO</div>
+          <div class="chat-sub">Conversa direta com o JARBISS</div>
+        </div>
+        <div class="chip">SECURE LINK</div>
+      </div>
+
+      <div class="messages" id="messages" aria-live="polite">
+        <div class="message bot">
+          <div class="label">JARBISS / SISTEMA</div>
+          Sistemas inicializados. Estou pronto para receber suas instruções.
+        </div>
+      </div>
+
+      <div class="composer-wrap">
+        <form class="composer" id="chatForm">
+          <input id="messageInput" placeholder="Digite sua instrução..." autocomplete="off" required aria-label="Mensagem para JARBISS">
+          <button class="send" id="sendButton" type="submit">ENVIAR ↗</button>
+        </form>
+        <div class="voice-row">
+          <div class="hint">ENTER PARA ENVIAR · MANTENHA A CONVERSA OBJETIVA</div>
+          <button type="button" class="voice-button" id="voiceButton">♫ ATIVAR VOZ</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer>JARBISS PERSONAL AI · INTERFACE DE COMANDO</footer>
+
+<script>
+const form = document.getElementById("chatForm");
+const input = document.getElementById("messageInput");
+const messages = document.getElementById("messages");
+const button = document.getElementById("sendButton");
+const serverStatus = document.getElementById("serverStatus");
+const topStatus = document.getElementById("topStatus");
+const voiceButton = document.getElementById("voiceButton");
+const voiceStatus = document.getElementById("voiceStatus");
+let voiceEnabled = false;
+
+function speakJarbiss(text) {
+  if (!voiceEnabled || !("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "pt-BR";
+  speech.rate = 1.02;
+  speech.pitch = 0.82;
+  speech.volume = 1;
+  const voices = window.speechSynthesis.getVoices();
+  const voice = voices.find(v => v.lang.toLowerCase() === "pt-br")
+    || voices.find(v => v.lang.toLowerCase().startsWith("pt"));
+  if (voice) speech.voice = voice;
+  window.speechSynthesis.speak(speech);
+}
+
+function addMessage(text, type) {
+  const bubble = document.createElement("div");
+  bubble.className = "message " + type;
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = type === "user" ? "VOCÊ" : "JARBISS";
+  const content = document.createElement("div");
+  content.textContent = text;
+  bubble.append(label, content);
+  messages.appendChild(bubble);
+  messages.scrollTop = messages.scrollHeight;
+  return content;
+}
+
+voiceButton.addEventListener("click", () => {
+  if (!("speechSynthesis" in window)) {
+    alert("Este navegador não disponibilizou a função de voz.");
+    return;
+  }
+  voiceEnabled = !voiceEnabled;
+  voiceStatus.textContent = voiceEnabled ? "Ativado" : "Desativado";
+  voiceButton.textContent = voiceEnabled ? "♫ DESATIVAR VOZ" : "♫ ATIVAR VOZ";
+  voiceButton.classList.toggle("active", voiceEnabled);
+  if (voiceEnabled) {
+    speakJarbiss("JARBISS operacional. Voz ativada. Aguardando suas instruções.");
+  } else {
+    window.speechSynthesis.cancel();
+  }
+});
+
+document.getElementById("focusShortcut").addEventListener("click", () => input.focus());
+document.getElementById("voiceShortcut").addEventListener("click", () => {
+  voiceButton.scrollIntoView({behavior:"smooth",block:"center"});
+  voiceButton.focus();
+});
+
+async function checkServer() {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({message:"Responda apenas: online"})
+    });
+    serverStatus.textContent = response.ok ? "Conectado" : "Verificar resposta";
+    topStatus.textContent = response.ok ? "SISTEMA ONLINE" : "ATENÇÃO AO SISTEMA";
+  } catch {
+    serverStatus.textContent = "Sem conexão";
+    topStatus.textContent = "VERIFICAR SERVIDOR";
+  }
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  const message = input.value.trim();
+  if (!message) return;
+  addMessage(message, "user");
+  input.value = "";
+  button.disabled = true;
+  button.textContent = "...";
+  const reply = addMessage("Processando sua mensagem...", "bot");
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({message})
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Falha na comunicação.");
+    const answer = data.reply || "Não recebi uma resposta.";
+    reply.textContent = answer;
+    speakJarbiss(answer);
+  } catch (error) {
+    reply.textContent = "Não consegui conectar à IA. " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "ENVIAR ↗";
+    input.focus();
+  }
+});
+
+if ("speechSynthesis" in window) window.speechSynthesis.getVoices();
+checkServer();
+</script>
+</body>
+</html>
