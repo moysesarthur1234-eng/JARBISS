@@ -5,86 +5,497 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
   <title>JARBISS — IA Pessoal</title>
+
   <style>
+    :root {
+      --bg: #050b14;
+      --panel: #0b1625;
+      --border: #18334a;
+      --cyan: #42e5ff;
+      --text: #e9f7ff;
+      --muted: #8ba5ba;
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #07111f;
-      color: #eafaff;
       min-height: 100vh;
+      background:
+        radial-gradient(ellipse at top, #102b43 0%, transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
     }
-    header {
-      padding: 22px;
-      text-align: center;
-      border-bottom: 1px solid #17354b;
-    }
-    header h1 {
-      margin: 0;
-      color: #45e4ff;
-      letter-spacing: 5px;
-    }
-    header p { color: #8da9bb; font-size: 13px; }
-    main {
-      max-width: 760px;
+
+    button, input { font: inherit; }
+
+    .app {
+      max-width: 1000px;
+      min-height: 100vh;
       margin: auto;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
-    .orb {
-      width: 110px;
-      height: 110px;
-      margin: 25px auto;
-      border-radius: 50%;
-      background: radial-gradient(circle, #a6f8ff, #159acb 35%, #07111f 72%);
-      box-shadow: 0 0 35px #159acb;
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0 20px;
+      border-bottom: 1px solid var(--border);
     }
-    #status {
+
+    .brand {
+      margin: 0;
+      color: var(--cyan);
+      letter-spacing: 5px;
+      font-size: 27px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 7px 0 0;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .badge {
+      color: #83f5bd;
+      border: 1px solid #20543f;
+      background: #0c241d;
+      border-radius: 30px;
+      padding: 8px 12px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .hero {
       text-align: center;
-      color: #69edb1;
+      padding: 22px 0 12px;
+    }
+
+    .orb {
+      width: 116px;
+      height: 116px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 40% 35%,
+        #ffffff 0%,
+        #a7f7ff 9%,
+        #39d9ff 23%,
+        #126aab 48%,
+        #07111f 73%
+      );
+      box-shadow: 0 0 25px #23caff77,
+                  0 0 65px #168ad944,
+                  inset 0 0 20px #ffffff66;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    .orb.speaking {
+      box-shadow: 0 0 40px #42e5ff,
+                  0 0 90px #168ad977;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .hero h2 {
+      font-size: 19px;
+      margin: 0 0 7px;
+    }
+
+    #status {
+      color: var(--muted);
       font-size: 13px;
+      min-height: 18px;
     }
+
+    .chat-panel {
+      flex: 1;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      background: #081421eF;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 50px #0005;
+    }
+
+    .chat-heading {
+      padding: 14px 17px;
+      border-bottom: 1px solid var(--border);
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
     #chat {
-      height: 42vh;
+      flex: 1;
+      height: 34vh;
       min-height: 250px;
+      max-height: 480px;
       overflow-y: auto;
-      border: 1px solid #1c4057;
-      border-radius: 14px;
-      padding: 15px;
-      background: #0a1827;
-      margin-top: 22px;
+      padding: 16px;
+      scroll-behavior: smooth;
     }
+
     .msg {
-      padding: 12px 14px;
+      max-width: 88%;
+      padding: 12px 15px;
       margin: 10px 0;
-      border-radius: 12px;
-      line-height: 1.5;
+      border-radius: 14px;
+      line-height: 1.55;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+      font-size: 14px;
     }
-    .user { background: #123e56; margin-left: 25px; }
-    .bot { background: #102638; margin-right: 25px; }
-    form { display: flex; gap: 8px; margin-top: 14px; }
-    input {
+
+    .bot {
+      background: #102638;
+      border: 1px solid #1b4055;
+      margin-right: auto;
+    }
+
+    .user {
+      background: #123e56;
+      border: 1px solid #20617c;
+      margin-left: auto;
+    }
+
+    .msg-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--cyan);
+      margin-bottom: 5px;
+    }
+
+    .composer {
+      display: flex;
+      gap: 9px;
+      padding: 13px;
+      border-top: 1px solid var(--border);
+      background: #07111d;
+    }
+
+    #message {
       flex: 1;
+      width: 0;
       min-width: 0;
       padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #24516a;
-      background: #0a1827;
       color: white;
-      font-size: 16px;
+      background: #0b1b2a;
+      border: 1px solid #24445a;
+      border-radius: 11px;
+      outline: none;
     }
+
+    #message:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px #42e5ff18;
+    }
+
     button {
       border: 0;
       border-radius: 10px;
-      padding: 12px 16px;
-      background: #37d9f5;
-      color: #04111c;
+      padding: 12px 15px;
       font-weight: bold;
       cursor: pointer;
+      transition: opacity .2s, transform .2s;
     }
-    button:disabled { opacity: .5; }
-    .actions { display: flex; gap: 10px; margin-top: 12px; }
-    .actions button { flex: 1; }
-    #voice { background: #18384d; color: white; }
-    footer { text-align:
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .5; cursor: wait; }
+
+    #send {
+      color: #03111a;
+      background: var(--cyan);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .actions button {
+      flex: 1;
+      color: var(--text);
+      background: #102438;
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .actions button.active {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    footer {
+      text-align: center;
+      color: #607c91;
+      font-size: 11px;
+      padding: 20px 0 5px;
+    }
+
+    @media (max-width: 560px) {
+      .app { padding: 13px; }
+      .brand { font-size: 22px; letter-spacing: 4px; }
+      .badge { font-size: 10px; padding: 7px 9px; }
+      .orb { width: 95px; height: 95px; }
+      #chat { height: 36vh; padding: 11px; }
+      .msg { max-width: 94%; }
+      .composer { padding: 9px; gap: 7px; }
+      #message { padding: 12px 10px; }
+      #send { padding: 10px 12px; }
+      .actions button { padding: 11px 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1 class="brand">JARBISS</h1>
+        <p class="subtitle">INTELIGÊNCIA PESSOAL</p>
+      </div>
+      <div class="badge" id="connection">● INTERFACE ONLINE</div>
+    </header>
+
+    <section class="hero">
+      <div class="orb" id="orb" aria-hidden="true"></div>
+      <h2>À sua disposição.</h2>
+      <div id="status" role="status">Sistema inicializado. Aguardando comando.</div>
+    </section>
+
+    <section class="chat-panel" aria-label="Conversa com JARBISS">
+      <div class="chat-heading">CENTRAL DE COMUNICAÇÃO</div>
+
+      <div id="chat" aria-live="polite">
+        <div class="msg bot">
+          <span class="msg-label">JARBISS</span>
+          Olá, parceiro! Sou o JARBISS, sua IA pessoal. Estou pronto para ajudar. O que vamos fazer hoje?
+        </div>
+      </div>
+
+      <form class="composer" id="form">
+        <input
+          id="message"
+          type="text"
+          placeholder="Digite seu comando..."
+          autocomplete="off"
+          aria-label="Mensagem para JARBISS"
+          required
+        >
+        <button id="send" type="submit">Enviar</button>
+      </form>
+    </section>
+
+    <div class="actions">
+      <button type="button" id="voice">🔊 Voz: desligada</button>
+      <button type="button" id="clear">↻ Nova conversa</button>
+    </div>
+
+    <footer>
+      JARBISS • ASSISTENTE PESSOAL • SISTEMA WEB
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const input = document.getElementById("message");
+    const sendButton = document.getElementById("send");
+    const chat = document.getElementById("chat");
+    const statusText = document.getElementById("status");
+    const connection = document.getElementById("connection");
+    const voiceButton = document.getElementById("voice");
+    const clearButton = document.getElementById("clear");
+    const orb = document.getElementById("orb");
+
+    let voiceEnabled = false;
+
+    function addMessage(text, sender) {
+      const bubble = document.createElement("div");
+      bubble.className = "msg " + sender;
+
+      const label = document.createElement("span");
+      label.className = "msg-label";
+      label.textContent = sender === "user" ? "VOCÊ" : "JARBISS";
+
+      const content = document.createElement("div");
+      content.textContent = text;
+
+      bubble.appendChild(label);
+      bubble.appendChild(content);
+      chat.appendChild(bubble);
+      chat.scrollTop = chat.scrollHeight;
+      return bubble;
+    }
+
+    function speak(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "pt-BR";
+      utterance.rate = 1;
+      utterance.pitch = 0.95;
+
+      utterance.onstart = () => orb.classList.add("speaking");
+      utterance.onend = () => orb.classList.remove("speaking");
+      utterance.onerror = () => orb.classList.remove("speaking");
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function extractReply(data) {
+      if (typeof data === "string") return data;
+
+      if (data && typeof data === "object") {
+        if (typeof data.reply === "string") return data.reply;
+        if (typeof data.response === "string") return data.response;
+        if (typeof data.message === "string") return data.message;
+        if (typeof data.content === "string") return data.content;
+
+        const choice = data.choices && data.choices[0];
+        if (choice && choice.message &&
+            typeof choice.message.content === "string") {
+          return choice.message.content;
+        }
+      }
+
+      return "";
+    }
+
+    async function sendMessage(message) {
+      addMessage(message, "user");
+      input.value = "";
+      input.focus();
+
+      sendButton.disabled = true;
+      input.disabled = true;
+      statusText.textContent = "Processando seu comando...";
+      connection.textContent = "● PROCESSANDO";
+
+      const waiting = addMessage("Um instante, estou pensando...", "bot");
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const raw = await response.text();
+        let data;
+
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          throw new Error("O servidor retornou uma resposta inválida.");
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || data.message ||
+            "O servidor respondeu com erro " + response.status + "."
+          );
+        }
+
+        const reply = extractReply(data);
+
+        if (!reply) {
+          throw new Error("O servidor respondeu, mas não encontrei o texto da resposta.");
+        }
+
+        waiting.remove();
+        addMessage(reply, "bot");
+        statusText.textContent = "Comando concluído.";
+        connection.textContent = "● INTERFACE ONLINE";
+        speak(reply);
+
+      } catch (error) {
+        waiting.remove();
+
+        addMessage(
+          "Não consegui falar com o servidor de IA. " +
+          error.message +
+          " Verifique a configuração do servidor no Render.",
+          "bot"
+        );
+
+        statusText.textContent = "Falha ao consultar a IA.";
+        connection.textContent = "● VERIFICAR SERVIDOR";
+      } finally {
+        sendButton.disabled = false;
+        input.disabled = false;
+        input.focus();
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const message = input.value.trim();
+      if (!message || sendButton.disabled) return;
+
+      sendMessage(message);
+    });
+
+    voiceButton.addEventListener("click", function() {
+      voiceEnabled = !voiceEnabled;
+      voiceButton.textContent = voiceEnabled
+        ? "🔊 Voz: ligada"
+        : "🔊 Voz: desligada";
+
+      voiceButton.classList.toggle("active", voiceEnabled);
+
+      if (!voiceEnabled && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        orb.classList.remove("speaking");
+      } else {
+        speak("Voz ativada. Estou ouvindo, parceiro.");
+      }
+    });
+
+    clearButton.addEventListener("click", function() {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+
+      chat.replaceChildren();
+
+      addMessage(
+        "Conversa reiniciada. Estou pronto para o próximo comando, parceiro!",
+        "bot"
+      );
+
+      statusText.textContent = "Aguardando novo comando.";
+      input.value = "";
+      input.focus();
+    });
+
+    window.addEventListener("error", function() {
+      statusText.textContent = "Ocorreu um erro na interface.";
+    });
+  </script>
+</body>
+</html>
