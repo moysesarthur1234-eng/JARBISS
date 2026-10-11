@@ -374,6 +374,112 @@
         scroll-behavior: auto !important;
       }
     }
+
+/* JARBISS 2.0 — painel holográfico */
+:root {
+  --neon: #35dfff;
+  --neon-soft: rgba(53, 223, 255, 0.18);
+  --gold: #d8b36a;
+  --gold-soft: rgba(216, 179, 106, 0.18);
+  --active-accent: var(--neon);
+  --active-glow: var(--neon-soft);
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% 18%, #102435 0%, transparent 48%),
+    #030609;
+}
+
+.app {
+  max-width: 1240px;
+}
+
+.hero {
+  position: relative;
+  padding: 30px 0 24px;
+}
+
+.orb {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--active-accent);
+  background:
+    radial-gradient(circle, #102633 0%, #07111b 48%, #030609 72%);
+  box-shadow:
+    0 0 12px var(--active-glow),
+    0 0 32px var(--active-glow),
+    inset 0 0 24px var(--active-glow);
+}
+
+.orb::before,
+.orb::after {
+  content: "";
+  position: absolute;
+  border: 1px solid var(--active-accent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orb::before {
+  inset: 9px;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  animation: jarbiss-spin 12s linear infinite;
+}
+
+.orb::after {
+  inset: -9px;
+  border-style: dashed;
+  opacity: 0.65;
+  animation: jarbiss-spin 24s linear infinite reverse;
+}
+
+@keyframes jarbiss-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modo dourado */
+body[data-mode="civic"] {
+  --active-accent: var(--gold);
+  --active-glow: var(--gold-soft);
+}
+
+/* Painéis refinados */
+.chat-panel {
+  border-color: #244054;
+  background: rgba(5, 13, 22, 0.94);
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 24px rgba(53, 223, 255, 0.025);
+}
+
+.chat-heading {
+  border-bottom-color: #244054;
+}
+
+#message {
+  background: #060d15;
+  border-color: #294357;
+}
+
+#message:focus {
+  border-color: var(--active-accent);
+  box-shadow: 0 0 14px var(--active-glow);
+}
+
+#send {
+  background: var(--active-accent);
+}
+
+@media (max-width: 560px) {
+  .orb {
+    width: 120px;
+    height: 120px;
+  }
+}
+
   </style>
 </head>
 
