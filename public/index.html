@@ -331,6 +331,21 @@
       color: var(--cyan);
     }
 
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tools button {
+      flex: 1 1 140px;
+      color: var(--text);
+      background: #0b1b2a;
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
     footer {
       text-align: center;
       color: #607c91;
@@ -411,6 +426,11 @@
       <button type="button" id="clear">↻ Nova conversa</button>
     </div>
 
+    <div class="tools" aria-label="Ferramentas pessoais">
+      <button type="button" id="notes">📝 Bloco de notas</button>
+      <button type="button" id="history">💬 Histórico</button>
+    </div>
+
     <footer>
       JARBISS • ASSISTENTE PESSOAL • SISTEMA WEB
     </footer>
@@ -426,8 +446,27 @@
     const voiceButton = document.getElementById("voice");
     const clearButton = document.getElementById("clear");
     const orb = document.getElementById("orb");
+    const notesButton = document.getElementById("notes");
+    const historyButton = document.getElementById("history");
 
     let voiceEnabled = false;
+    const HISTORY_KEY = "jarbiss_history_v1";
+    const NOTES_KEY = "jarbiss_notes_v1";
+
+    function loadHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveHistoryEntry(text, sender) {
+      const history = loadHistory();
+      history.push({ text: String(text), sender, time: new Date().toLocaleString("pt-BR") });
+      // Mantém somente as 200 mensagens mais recentes.
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-200)));
+    }
 
     // Converte texto Markdown em elementos HTML seguros.
     function escaparHTML(texto) {
@@ -610,6 +649,7 @@
       bubble.appendChild(content);
       chat.appendChild(bubble);
       chat.scrollTop = chat.scrollHeight;
+      saveHistoryEntry(text, sender);
 
       return bubble;
     }
@@ -774,6 +814,7 @@
     });
 
     clearButton.addEventListener("click", function() {
+      if (!confirm("Iniciar uma nova conversa? O histórico salvo continuará disponível. Esta ação limpa apenas a conversa exibida.")) return;
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
@@ -791,6 +832,32 @@
       input.value = "";
       input.focus();
       orb.classList.remove("speaking");
+    });
+
+    notesButton.addEventListener("click", function() {
+      const atual = localStorage.getItem(NOTES_KEY) || "";
+      const novo = prompt("BLOCO DE NOTAS JARBISS\n\nEscreva ou edite suas anotações. Para apagar tudo, deixe vazio e confirme.", atual);
+      if (novo === null) return;
+      if (!novo.trim()) {
+        if (atual && !confirm("Tem certeza de que deseja apagar todas as anotações?")) return;
+        localStorage.removeItem(NOTES_KEY);
+        alert("Anotações apagadas.");
+      } else {
+        localStorage.setItem(NOTES_KEY, novo);
+        alert("Anotação salva neste navegador!");
+      }
+    });
+
+    historyButton.addEventListener("click", function() {
+      const history = loadHistory();
+      if (!history.length) {
+        alert("Ainda não há mensagens salvas no histórico.");
+        return;
+      }
+      const resumo = history.slice(-30).map(item =>
+        "[" + item.time + "] " + (item.sender === "user" ? "VOCÊ" : "JARBISS") + ": " + item.text
+      ).join("\n\n");
+      alert("HISTÓRICO RECENTE (até 30 mensagens)\n\n" + resumo + "\n\nAs mensagens ficam salvas somente neste navegador.");
     });
 
     window.addEventListener("error", function() {
