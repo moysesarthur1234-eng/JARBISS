@@ -480,6 +480,100 @@ body[data-mode="civic"] {
   }
 }
 
+/* Hologramas automotivos JARBISS */
+.vehicle-modes {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 28px auto;
+  width: 100%;
+}
+
+.vehicle-card {
+  --car-color: #35dfff;
+  width: min(100%, 300px);
+  flex: 1 1 240px;
+  max-width: 300px;
+  padding: 18px 14px;
+  color: var(--car-color);
+  background: rgba(3, 10, 18, 0.92);
+  border: 1px solid var(--car-color);
+  border-radius: 18px;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--car-color) 25%, transparent),
+    inset 0 0 22px rgba(53, 223, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.vehicle-card[data-vehicle="civic"] {
+  --car-color: #d8b36a;
+}
+
+.vehicle-card.active {
+  box-shadow: 0 0 26px color-mix(in srgb, var(--car-color) 42%, transparent),
+    inset 0 0 25px color-mix(in srgb, var(--car-color) 9%, transparent);
+  background: color-mix(in srgb, var(--car-color) 7%, #030609);
+}
+
+.vehicle-orb {
+  display: grid;
+  place-items: center;
+  width: 180px;
+  height: 180px;
+  max-width: 100%;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: radial-gradient(circle, #102333 0%, #030609 70%);
+  box-shadow: 0 0 18px currentColor, inset 0 0 22px currentColor;
+  position: relative;
+}
+
+.vehicle-orb::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  animation: jarbiss-spin 18s linear infinite;
+  opacity: 0.7;
+}
+
+.vehicle-orb svg {
+  width: 100%;
+  padding: 12px;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.vehicle-card strong {
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.vehicle-card small {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+}
+
+@media (max-width: 560px) {
+  .vehicle-modes {
+    gap: 12px;
+  }
+
+  .vehicle-card {
+    flex-basis: 100%;
+  }
+
+  .vehicle-orb {
+    width: 155px;
+    height: 155px;
+  }
+}
+
   </style>
 </head>
 
@@ -495,6 +589,48 @@ body[data-mode="civic"] {
 
     <section class="hero">
       <div class="orb" id="orb" aria-hidden="true"></div>
+    
+      <div class="vehicle-modes">
+        <button type="button" class="vehicle-card active" data-vehicle="sw4">
+          <span class="vehicle-orb sw4-orb">
+            <svg viewBox="0 0 160 90" role="img" aria-label="Frente estilizada da Toyota SW4">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <path d="M35 57 L42 35 L57 25 L103 25 L118 35 L125 57 L119 70 L41 70 Z"/>
+                <path d="M47 37 L59 29 L101 29 L113 37 Z"/>
+                <path d="M43 43 L58 42 L56 53 L39 54 Z"/>
+                <path d="M117 43 L102 42 L104 53 L121 54 Z"/>
+                <path d="M61 43 L99 43 L105 57 L55 57 Z"/>
+                <path d="M57 61 L103 61 M67 65 L93 65"/>
+                <path d="M35 57 L25 61 L25 69 L41 69 M125 57 L135 61 L135 69 L119 69"/>
+                <path d="M47 72 L47 77 L60 77 L60 72 M100 72 L100 77 L113 77 L113 72"/>
+              </g>
+            </svg>
+          </span>
+          <strong>TOYOTA SW4</strong>
+          <small>MODO AZUL • NEON</small>
+        </button>
+
+        <button type="button" class="vehicle-card" data-vehicle="civic">
+          <span class="vehicle-orb civic-orb">
+            <svg viewBox="0 0 160 90" role="img" aria-label="Frente estilizada do Honda Civic Touring">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <path d="M27 57 L39 40 L58 30 L102 30 L121 40 L133 57 L127 69 L33 69 Z"/>
+                <path d="M45 41 L60 34 L100 34 L115 41 Z"/>
+                <path d="M40 46 L57 45 L53 53 L34 54 Z"/>
+                <path d="M120 46 L103 45 L107 53 L126 54 Z"/>
+                <path d="M34 57 L55 56 L105 56 L126 57"/>
+                <path d="M48 61 L112 61 L106 67 L54 67 Z"/>
+                <path d="M59 62 L59 66 M67 62 L67 66 M75 62 L75 66 M83 62 L83 66 M91 62 L91 66 M99 62 L99 66"/>
+                <path d="M27 57 L20 61 L20 68 L34 68 M133 57 L140 61 L140 68 L126 68"/>
+                <path d="M45 71 L45 76 L60 76 L60 71 M100 71 L100 76 L115 76 L115 71"/>
+              </g>
+            </svg>
+          </span>
+          <strong>HONDA CIVIC TOURING</strong>
+          <small>MODO DOURADO • NEON</small>
+        </button>
+      </div>
+
       <h2>À sua disposição.</h2>
       <div id="status" role="status">
         Sistema inicializado. Aguardando comando.
@@ -891,6 +1027,26 @@ body[data-mode="civic"] {
         chat.scrollTop = chat.scrollHeight;
       }
     }
+
+const vehicleCards = document.querySelectorAll(".vehicle-card");
+
+vehicleCards.forEach(function(card) {
+  card.addEventListener("click", function() {
+    const mode = card.dataset.vehicle;
+
+    document.body.dataset.mode = mode;
+
+    vehicleCards.forEach(function(item) {
+      item.classList.toggle("active", item === card);
+    });
+
+    const nome = mode === "civic"
+      ? "Honda Civic Touring"
+      : "Toyota SW4";
+
+    statusText.textContent = "Modo " + nome + " ativado.";
+  });
+});
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
