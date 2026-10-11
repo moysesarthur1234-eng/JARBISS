@@ -881,21 +881,36 @@
       micButton.title = "Falar com o JARBISS";
       micButton.setAttribute("aria-label", "Falar com o JARBISS");
 
-      Object.assign(micButton.style, {
-        position: "fixed",
-        right: "18px",
-        bottom: "18px",
-        zIndex: "99999",
-        width: "58px",
-        height: "58px",
-        borderRadius: "50%",
-        border: "1px solid #42e5ff",
-        background: "#0b2039",
-        color: "#85efff",
-        fontSize: "25px",
-        cursor: "pointer",
-        boxShadow: "0 0 18px #00c8ff55"
-      });
+      
+Object.assign(micButton.style, {
+  position: "fixed",
+  right: "22px",
+  bottom: "22px",
+  zIndex: "99999",
+  width: "62px",
+  height: "62px",
+  borderRadius: "50%",
+  border: "2px solid #b89b5e",
+  background: "linear-gradient(145deg, #292923, #10110f)",
+  color: "#e1c782",
+  fontSize: "27px",
+  cursor: "pointer",
+  boxShadow: "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18",
+  transition: "all .25s ease"
+});
+
+micButton.addEventListener("mouseenter", function () {
+  micButton.style.boxShadow =
+    "0 0 25px #b89b5e77, inset 0 0 14px #b89b5e22";
+  micButton.style.transform = "scale(1.06)";
+});
+
+micButton.addEventListener("mouseleave", function () {
+  micButton.style.boxShadow =
+    "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18";
+  micButton.style.transform = "scale(1)";
+});
+
 
       micButton.addEventListener("click", function () {
         const SpeechRecognition =
