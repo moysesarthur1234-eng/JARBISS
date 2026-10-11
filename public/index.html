@@ -864,5 +864,50 @@
       statusText.textContent = "Ocorreu um erro na interface.";
     });
   </script>
+  
+  <button id="micButton" type="button" title="Falar por voz" style="position:fixed;bottom:24px;right:24px;z-index:9999;border:0;border-radius:50%;width:54px;height:54px;background:#16a34a;color:white;font-size:24px;cursor:pointer;">🎙️</button>
+  <script>
+    (function () {
+      const mic = document.getElementById("micButton");
+     const input = document.getElementById("message");
+const form = document.getElementById("form");
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      mic.addEventListener("click", function () {
+        if (!SpeechRecognition) {
+          alert("O navegador não oferece suporte ao reconhecimento de voz. Tente no Google Chrome.");
+          return;
+        }
+
+        if (!input || !form) {
+          alert("Não encontrei o campo de mensagem ou o formulário do chat.");
+          return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = "pt-BR";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        mic.textContent = "⏺️";
+        recognition.onresult = function (event) {
+          input.value = event.results[0][0].transcript;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          form.requestSubmit();
+        };
+
+        recognition.onerror = function () {
+          alert("Não consegui captar a voz. Confira a permissão do microfone.");
+        };
+
+        recognition.onend = function () {
+          mic.textContent = "🎙️";
+        };
+
+        recognition.start();
+      });
+    })();
+  </script>
+
 </body>
 </html>
