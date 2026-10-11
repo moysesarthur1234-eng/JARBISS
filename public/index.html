@@ -1,11 +1,11 @@
 
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#03070d">
+
 <style>
 html, body {
   background-color: #03070d;
@@ -14,32 +14,895 @@ html, body {
 html {
   color-scheme: dark;
 }
-
 </style>
+
 <title>JARBISS | Central de Comando</title>
+
 <style>
-:root{--bg:#03070d;--panel:#071321;--line:#17445a;--accent:#00eaff;--glow:rgba(0,234,255,.2);--text:#eafaff;--muted:#7894a8;--green:#6dffbd}
-*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(ellipse at 50% -5%,rgba(0,119,255,.16),transparent 42%),radial-gradient(ellipse at 12% 40%,rgba(0,234,255,.05),transparent 35%),var(--bg)}button,input{font:inherit}button{cursor:pointer}header{min-height:74px;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);background:#050c15ed;box-shadow:0 5px 25px #0005}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--accent);border-radius:12px;color:var(--accent);font-size:23px;box-shadow:0 0 20px var(--glow)}.logo{font-weight:900;letter-spacing:4px;font-size:20px}.logo span{color:var(--accent)}.brand-sub{font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:4px}.status{font-size:10px;color:var(--green);letter-spacing:1px}main{max-width:1450px;margin:auto;padding:30px}.eyebrow{color:var(--accent);font-size:10px;letter-spacing:3px}h1{font-size:clamp(27px,4vw,40px);margin:10px 0}.subtitle{color:var(--muted);font-size:13px;line-height:1.6}.layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;margin-top:25px}.panel{min-width:0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#0b1b2bee,#050c16f2);box-shadow:0 15px 45px #0005}.sidebar{padding:20px;align-self:start}.section-label{font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:15px}.core-wrap{display:grid;place-items:center;padding:18px 0 27px}.core{position:relative;width:145px;height:145px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--accent);background:radial-gradient(circle,#0c3445 0%,#061624 57%,#030912 75%);box-shadow:0 0 30px var(--glow),inset 0 0 25px var(--glow);animation:breathe 4s ease-in-out infinite;isolation:isolate}.core:before,.core:after{content:"";position:absolute;border-radius:50%;pointer-events:none}.core:before{inset:-10px;border:1px solid rgba(0,234,255,.42);box-shadow:0 0 14px rgba(0,234,255,.15)}.core:after{inset:-19px;border:1px dashed rgba(0,119,255,.45);animation:spin 24s linear infinite}.core-name{position:relative;z-index:1;color:var(--accent);font-size:19px;font-weight:800;letter-spacing:3px;text-shadow:0 0 8px var(--accent),0 0 22px #0077ff}.core-caption{text-align:center;font-size:9px;letter-spacing:2px;color:var(--accent);margin-top:24px}.metric{padding:12px 0;border-top:1px solid #183448}.metric small{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}.metric strong{font-size:12px;font-weight:500}.metric strong:before{content:"";display:inline-block;width:5px;height:5px;background:var(--accent);border-radius:50%;margin:0 8px 2px 0}.shortcut{width:100%;margin-top:8px;padding:12px;text-align:left;border:1px solid var(--line);border-radius:10px;background:#071624;color:var(--text);font-size:11px;transition:.2s}.shortcut:hover{border-color:var(--accent);box-shadow:0 0 14px var(--glow)}.chat{display:flex;flex-direction:column;min-height:600px;overflow:hidden}.chat-head{padding:19px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#07111e99}.chat-title{font-size:11px;letter-spacing:2px}.chat-sub{font-size:10px;color:var(--muted);margin-top:5px}.chip{font-size:9px;color:var(--accent);border:1px solid var(--line);padding:7px;border-radius:7px}.messages{flex:1;min-height:280px;max-height:470px;overflow-y:auto;padding:22px;scroll-behavior:smooth}.message{max-width:88%;margin-bottom:16px;padding:13px 15px;border-radius:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.bot{background:#0c1d2c;border:1px solid #174258;border-left:2px solid var(--accent);margin-right:auto}.user{background:#102637;border:1px solid #24506a;border-right:2px solid var(--green);margin-left:auto}.label{font-size:9px;letter-spacing:2px;color:var(--accent);margin-bottom:6px}.user .label{color:var(--green);text-align:right}.composer-wrap{padding:16px;border-top:1px solid var(--line);background:#050c15dd}.composer{display:flex;gap:8px;padding:7px;border:1px solid var(--line);border-radius:12px;background:#030912}.composer:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--text);padding:10px;font-size:13px}input::placeholder{color:#657c96}.send,.voice-button{border:1px solid var(--accent);border-radius:9px;padding:11px 13px;background:var(--accent);color:#031018;font-size:10px;font-weight:800}.send:disabled{opacity:.5;cursor:wait}.voice-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}.voice-button{background:#0b1d2a;color:var(--accent)}.voice-button.active{border-color:var(--green);color:var(--green)}.hint{font-size:10px;color:var(--muted);line-height:1.5}footer{text-align:center;color:#526b86;font-size:9px;letter-spacing:2px;padding:0 12px 24px}@keyframes breathe{50%{box-shadow:0 0 48px var(--glow),inset 0 0 32px var(--glow)}}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:800px){main{padding:22px 13px}header{padding:13px 16px}.layout{grid-template-columns:1fr;gap:13px}.sidebar{padding:15px}.chat{min-height:470px}.messages{padding:15px 12px;max-height:390px}.message{max-width:95%}.chat-head{padding:15px}.voice-row{align-items:stretch;flex-direction:column}.voice-button{width:100%}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+:root {
+  --bg: #03070d;
+  --panel: #071321;
+  --line: #17445a;
+  --accent: #00eaff;
+  --glow: rgba(0,234,255,.2);
+  --text: #eafaff;
+  --muted: #7894a8;
+  --green: #6dffbd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -5%, rgba(0,119,255,.16), transparent 42%),
+    radial-gradient(ellipse at 12% 40%, rgba(0,234,255,.05), transparent 35%),
+    var(--bg);
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* TELA DE CARREGAMENTO */
+
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background: #03070d;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .7s ease, visibility .7s ease;
+}
+
+.boot-content {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.boot-core {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  background: radial-gradient(circle, #0c3445, #061624 58%, #030912 78%);
+  box-shadow: 0 0 28px rgba(0,234,255,.25),
+              inset 0 0 24px rgba(0,234,255,.2);
+  animation: bootPulse 2.4s ease-in-out infinite;
+}
+
+.boot-core::before,
+.boot-core::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.boot-core::before {
+  inset: -9px;
+  border: 1px solid rgba(0,234,255,.5);
+  box-shadow: 0 0 15px rgba(0,234,255,.15);
+}
+
+.boot-core::after {
+  inset: -18px;
+  border: 1px dashed rgba(0,119,255,.5);
+  animation: bootSpin 14s linear infinite;
+}
+
+.boot-title {
+  color: #eafaff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 7px;
+  text-shadow: 0 0 18px rgba(0,234,255,.15);
+}
+
+.boot-subtitle {
+  margin-top: 12px;
+  color: #7894a8;
+  font-size: 9px;
+  letter-spacing: 3px;
+}
+
+.boot-track {
+  width: 190px;
+  max-width: 75%;
+  height: 2px;
+  margin: 28px auto 15px;
+  overflow: hidden;
+  background: #102637;
+}
+
+.boot-progress {
+  width: 38%;
+  height: 100%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+  animation: bootLoad 1.5s ease-in-out infinite alternate;
+}
+
+.boot-status {
+  color: var(--accent);
+  font-size: 9px;
+  letter-spacing: 2px;
+  animation: bootBlink 1.5s ease-in-out infinite;
+}
+
+.boot-screen.boot-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes bootPulse {
+  50% {
+    box-shadow: 0 0 45px rgba(0,234,255,.4),
+                inset 0 0 32px rgba(0,234,255,.3);
+  }
+}
+
+@keyframes bootSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bootLoad {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(165%); }
+}
+
+@keyframes bootBlink {
+  50% { opacity: .45; }
+}
+
+/* INTERFACE PRINCIPAL */
+
+header {
+  min-height: 74px;
+  padding: 14px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  background: #050c15ed;
+  box-shadow: 0 5px 25px #0005;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: 23px;
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.logo {
+  font-weight: 900;
+  letter-spacing: 4px;
+  font-size: 20px;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+.brand-sub {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+.status {
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+
+main {
+  max-width: 1450px;
+  margin: auto;
+  padding: 30px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  font-size: clamp(27px, 4vw, 40px);
+  margin: 10px 0;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0b1b2bee, #050c16f2);
+  box-shadow: 0 15px 45px #0005;
+}
+
+.sidebar {
+  padding: 20px;
+  align-self: start;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 15px;
+}
+
+.core-wrap {
+  display: grid;
+  place-items: center;
+  padding: 18px 0 27px;
+}
+
+.core {
+  position: relative;
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--accent);
+  background: radial-gradient(circle, #0c3445 0%, #061624 57%, #030912 75%);
+  box-shadow: 0 0 30px var(--glow), inset 0 0 25px var(--glow);
+  animation: breathe 4s ease-in-out infinite;
+  isolation: isolate;
+}
+
+.core:before,
+.core:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.core:before {
+  inset: -10px;
+  border: 1px solid rgba(0,234,255,.42);
+  box-shadow: 0 0 14px rgba(0,234,255,.15);
+}
+
+.core:after {
+  inset: -19px;
+  border: 1px dashed rgba(0,119,255,.45);
+  animation: spin 24s linear infinite;
+}
+
+.core-name {
+  position: relative;
+  z-index: 1;
+  color: var(--accent);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px var(--accent), 0 0 22px #0077ff;
+}
+
+.core-caption {
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-top: 24px;
+}
+
+.metric {
+  padding: 12px 0;
+  border-top: 1px solid #183448;
+}
+
+.metric small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+
+.metric strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.metric strong:before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin: 0 8px 2px 0;
+}
+
+.shortcut {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #071624;
+  color: var(--text);
+  font-size: 11px;
+  transition: .2s;
+}
+
+.shortcut:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.chat-head {
+  padding: 19px 22px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #07111e99;
+}
+
+.chat-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.chat-sub {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.chip {
+  font-size: 9px;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  padding: 7px;
+  border-radius: 7px;
+}
+
+.messages {
+  flex: 1;
+  min-height: 280px;
+  max-height: 470px;
+  overflow-y: auto;
+  padding: 22px;
+  scroll-behavior: smooth;
+}
+
+.message {
+  max-width: 88%;
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bot {
+  background: #0c1d2c;
+  border: 1px solid #174258;
+  border-left: 2px solid var(--accent);
+  margin-right: auto;
+}
+
+.user {
+  background: #102637;
+  border: 1px solid #24506a;
+  border-right: 2px solid var(--green);
+  margin-left: auto;
+}
+
+.label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.user .label {
+  color: var(--green);
+  text-align: right;
+}
+
+.composer-wrap {
+  padding: 16px;
+  border-top: 1px solid var(--line);
+  background: #050c15dd;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #030912;
+}
+
+.composer:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  padding: 10px;
+  font-size: 13px;
+}
+
+input::placeholder {
+  color: #657c96;
+}
+
+.send, .voice-button {
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  padding: 11px 13px;
+  background: var(--accent);
+  color: #031018;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.send:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.voice-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.voice-button {
+  background: #0b1d2a;
+  color: var(--accent);
+}
+
+.voice-button.active {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.hint {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  color: #526b86;
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 0 12px 24px;
+}
+
+@keyframes breathe {
+  50% {
+    box-shadow: 0 0 48px var(--glow), inset 0 0 32px var(--glow);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media(max-width:800px) {
+  main {
+    padding: 22px 13px;
+  }
+
+  header {
+    padding: 13px 16px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .sidebar {
+    padding: 15px;
+  }
+
+  .chat {
+    min-height: 470px;
+  }
+
+  .messages {
+    padding: 15px 12px;
+    max-height: 390px;
+  }
+
+  .message {
+    max-width: 95%;
+  }
+
+  .chat-head {
+    padding: 15px;
+  }
+
+  .voice-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .voice-button {
+    width: 100%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *, *:before, *:after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
 </head>
+
 <body>
-<header><div class="brand"><div class="brand-mark">✳</div><div><div class="logo">JAR<span>BISS</span></div><div class="brand-sub">PERSONAL INTELLIGENCE</div></div></div><div class="status" id="topStatus">● VERIFICANDO SISTEMA</div></header>
-<main><div class="eyebrow">◈ PERSONAL AI SYSTEM / V2</div><h1>Central de comando<span style="color:var(--accent)">.</span></h1><div class="subtitle">Sua inteligência pessoal. Um novo nível de possibilidades.</div>
-<section class="layout"><aside class="panel sidebar"><div class="section-label">◈ NÚCLEO DO SISTEMA</div><div class="core-wrap"><div><div class="core"><span class="core-name">JARBISS</span></div><div class="core-caption">JARBISS CORE / ACTIVE</div></div></div>
-<div class="metric"><small>Interface</small><strong>Operacional</strong></div><div class="metric"><small>Conexão com IA</small><strong id="serverStatus">Verificando...</strong></div><div class="metric"><small>Assistente</small><strong>JARBISS AI</strong></div><div class="metric"><small>Sistema de voz</small><strong id="voiceStatus">Desativado</strong></div>
-<div class="section-label" style="margin-top:20px">◈ ACESSO RÁPIDO</div><button class="shortcut" type="button" id="focusShortcut">⌕ Nova mensagem</button><button class="shortcut" type="button" id="voiceShortcut">♫ Configurar voz</button></aside>
-<section class="panel chat"><div class="chat-head"><div><div class="chat-title">CANAL DE COMUNICAÇÃO</div><div class="chat-sub">Conversa direta com o JARBISS</div></div><div class="chip">SECURE LINK</div></div><div class="messages" id="messages" aria-live="polite"><div class="message bot"><div class="label">JARBISS / SISTEMA</div>Sistemas inicializados. Estou pronto para receber suas instruções.</div></div>
-<div class="composer-wrap"><form class="composer" id="chatForm"><input id="messageInput" placeholder="Digite sua instrução..." autocomplete="off" required aria-label="Mensagem para JARBISS"><button class="send" id="sendButton" type="submit">ENVIAR ↗</button></form><div class="voice-row"><div class="hint">ENTER PARA ENVIAR · CONVERSA DIRETA</div><button type="button" class="voice-button" id="voiceButton">♫ ATIVAR VOZ</button></div></div></section></section></main><footer>JARBISS PERSONAL AI · INTERFACE DE COMANDO</footer>
+
+<!-- TELA DE INICIALIZAÇÃO -->
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-content">
+    <div class="boot-core">JAR</div>
+    <div class="boot-title">JARBISS</div>
+    <div class="boot-subtitle">PERSONAL INTELLIGENCE</div>
+    <div class="boot-track">
+      <div class="boot-progress"></div>
+    </div>
+    <div class="boot-status">INICIALIZANDO SISTEMA...</div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">✳</div>
+    <div>
+      <div class="logo">JAR<span>BISS</span></div>
+      <div class="brand-sub">PERSONAL INTELLIGENCE</div>
+    </div>
+  </div>
+  <div class="status" id="topStatus">● VERIFICANDO SISTEMA</div>
+</header>
+
+<main>
+  <div class="eyebrow">◈ PERSONAL AI SYSTEM / V2</div>
+  <h1>Central de comando<span style="color:var(--accent)">.</span></h1>
+  <div class="subtitle">Sua inteligência pessoal. Um novo nível de possibilidades.</div>
+
+  <section class="layout">
+    <aside class="panel sidebar">
+      <div class="section-label">◈ NÚCLEO DO SISTEMA</div>
+
+      <div class="core-wrap">
+        <div>
+          <div class="core">
+            <span class="core-name">JARBISS</span>
+          </div>
+          <div class="core-caption">JARBISS CORE / ACTIVE</div>
+        </div>
+      </div>
+
+      <div class="metric">
+        <small>Interface</small>
+        <strong>Operacional</strong>
+      </div>
+
+      <div class="metric">
+        <small>Conexão com IA</small>
+        <strong id="serverStatus">Verificando...</strong>
+      </div>
+
+      <div class="metric">
+        <small>Assistente</small>
+        <strong>JARBISS AI</strong>
+      </div>
+
+      <div class="metric">
+        <small>Sistema de voz</small>
+        <strong id="voiceStatus">Desativado</strong>
+      </div>
+
+      <div class="section-label" style="margin-top:20px">◈ ACESSO RÁPIDO</div>
+      <button class="shortcut" type="button" id="focusShortcut">⌕ Nova mensagem</button>
+      <button class="shortcut" type="button" id="voiceShortcut">♫ Configurar voz</button>
+    </aside>
+
+    <section class="panel chat">
+      <div class="chat-head">
+        <div>
+          <div class="chat-title">CANAL DE COMUNICAÇÃO</div>
+          <div class="chat-sub">Conversa direta com o JARBISS</div>
+        </div>
+        <div class="chip">SECURE LINK</div>
+      </div>
+
+      <div class="messages" id="messages" aria-live="polite">
+        <div class="message bot">
+          <div class="label">JARBISS / SISTEMA</div>
+          Sistemas inicializados. Estou pronto para receber suas instruções.
+        </div>
+      </div>
+
+      <div class="composer-wrap">
+        <form class="composer" id="chatForm">
+          <input id="messageInput" placeholder="Digite sua instrução..." autocomplete="off" required aria-label="Mensagem para JARBISS">
+          <button class="send" id="sendButton" type="submit">ENVIAR ↗</button>
+        </form>
+
+        <div class="voice-row">
+          <div class="hint">ENTER PARA ENVIAR · CONVERSA DIRETA</div>
+          <button type="button" class="voice-button" id="voiceButton">♫ ATIVAR VOZ</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer>JARBISS PERSONAL AI · INTERFACE DE COMANDO</footer>
+
 <script>
-const form=document.getElementById("chatForm"),input=document.getElementById("messageInput"),messages=document.getElementById("messages"),sendButton=document.getElementById("sendButton"),serverStatus=document.getElementById("serverStatus"),topStatus=document.getElementById("topStatus"),voiceButton=document.getElementById("voiceButton"),voiceStatus=document.getElementById("voiceStatus");
-let voiceEnabled=false;
-function speakJarbiss(text){if(!voiceEnabled||!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const speech=new SpeechSynthesisUtterance(text);speech.lang="pt-BR";speech.rate=1;speech.pitch=.85;speech.volume=1;const voices=window.speechSynthesis.getVoices();const voice=voices.find(v=>v.lang.toLowerCase()==="pt-br")||voices.find(v=>v.lang.toLowerCase().startsWith("pt"));if(voice)speech.voice=voice;window.speechSynthesis.speak(speech)}
-function addMessage(text,type){const bubble=document.createElement("div");bubble.className="message "+type;const label=document.createElement("div");label.className="label";label.textContent=type==="user"?"VOCÊ":"JARBISS";const content=document.createElement("div");content.textContent=text;bubble.append(label,content);messages.appendChild(bubble);messages.scrollTop=messages.scrollHeight;return content}
-voiceButton.addEventListener("click",()=>{if(!("speechSynthesis"in window)){alert("Este navegador não disponibilizou a função de voz.");return}voiceEnabled=!voiceEnabled;voiceStatus.textContent=voiceEnabled?"Ativado":"Desativado";voiceButton.textContent=voiceEnabled?"♫ DESATIVAR VOZ":"♫ ATIVAR VOZ";voiceButton.classList.toggle("active",voiceEnabled);if(voiceEnabled)speakJarbiss("JARBISS operacional. Voz ativada. Aguardando suas instruções.");else window.speechSynthesis.cancel()});
-document.getElementById("focusShortcut").addEventListener("click",()=>input.focus());document.getElementById("voiceShortcut").addEventListener("click",()=>{voiceButton.scrollIntoView({behavior:"smooth",block:"center"});voiceButton.focus()});
-async function checkServer(){try{const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Responda apenas: online"})});serverStatus.textContent=response.ok?"Conectado":"Verificar resposta";topStatus.textContent=response.ok?"● SISTEMA ONLINE":"● ATENÇÃO AO SISTEMA"}catch{serverStatus.textContent="Sem conexão";topStatus.textContent="● VERIFICAR SERVIDOR"}}
-form.addEventListener("submit",async event=>{event.preventDefault();const message=input.value.trim();if(!message)return;addMessage(message,"user");input.value="";sendButton.disabled=true;sendButton.textContent="AGUARDE...";const reply=addMessage("Processando sua mensagem...","bot");try{const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message})});let data;try{data=await response.json()}catch{throw new Error("O servidor retornou uma resposta inválida.")}if(!response.ok)throw new Error(data.error||"Falha na comunicação.");const answer=data.reply||"Não recebi uma resposta.";reply.textContent=answer;speakJarbiss(answer)}catch(error){reply.textContent="Não consegui conectar à IA. "+error.message}finally{sendButton.disabled=false;sendButton.textContent="ENVIAR ↗";input.focus()}});
-if("speechSynthesis"in window)window.speechSynthesis.getVoices();checkServer();
+const form = document.getElementById("chatForm");
+const input = document.getElementById("messageInput");
+const messages = document.getElementById("messages");
+const sendButton = document.getElementById("sendButton");
+const serverStatus = document.getElementById("serverStatus");
+const topStatus = document.getElementById("topStatus");
+const voiceButton = document.getElementById("voiceButton");
+const voiceStatus = document.getElementById("voiceStatus");
+
+let voiceEnabled = false;
+
+/* VOZ DO JARBISS */
+function speakJarbiss(text) {
+  if (!voiceEnabled || !("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "pt-BR";
+  speech.rate = 1;
+  speech.pitch = .85;
+  speech.volume = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+
+  const voice =
+    voices.find(v => v.lang.toLowerCase() === "pt-br") ||
+    voices.find(v => v.lang.toLowerCase().startsWith("pt"));
+
+  if (voice) speech.voice = voice;
+
+  window.speechSynthesis.speak(speech);
+}
+
+/* MENSAGENS */
+function addMessage(text, type) {
+  const bubble = document.createElement("div");
+  bubble.className = "message " + type;
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = type === "user" ? "VOCÊ" : "JARBISS";
+
+  const content = document.createElement("div");
+  content.textContent = text;
+
+  bubble.append(label, content);
+  messages.appendChild(bubble);
+  messages.scrollTop = messages.scrollHeight;
+
+  return content;
+}
+
+/* BOTÃO DE VOZ */
+voiceButton.addEventListener("click", () => {
+  if (!("speechSynthesis" in window)) {
+    alert("Este navegador não disponibilizou a função de voz.");
+    return;
+  }
+
+  voiceEnabled = !voiceEnabled;
+
+  voiceStatus.textContent = voiceEnabled ? "Ativado" : "Desativado";
+  voiceButton.textContent = voiceEnabled
+    ? "♫ DESATIVAR VOZ"
+    : "♫ ATIVAR VOZ";
+
+  voiceButton.classList.toggle("active", voiceEnabled);
+
+  if (voiceEnabled) {
+    speakJarbiss("JARBISS operacional. Voz ativada. Aguardando suas instruções.");
+  } else {
+    window.speechSynthesis.cancel();
+  }
+});
+
+/* ACESSO RÁPIDO */
+document.getElementById("focusShortcut").addEventListener("click", () => {
+  input.focus();
+});
+
+document.getElementById("voiceShortcut").addEventListener("click", () => {
+  voiceButton.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+  voiceButton.focus();
+});
+
+/* CONEXÃO COM O SERVIDOR */
+async function checkServer() {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message: "Responda apenas: online"})
+    });
+
+    serverStatus.textContent = response.ok
+      ? "Conectado"
+      : "Verificar resposta";
+
+    topStatus.textContent = response.ok
+      ? "● SISTEMA ONLINE"
+      : "● ATENÇÃO AO SISTEMA";
+  } catch {
+    serverStatus.textContent = "Sem conexão";
+    topStatus.textContent = "● VERIFICAR SERVIDOR";
+  }
+}
+
+/* ENVIO DE MENSAGENS */
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const message = input.value.trim();
+  if (!message) return;
+
+  addMessage(message, "user");
+  input.value = "";
+
+  sendButton.disabled = true;
+  sendButton.textContent = "AGUARDE...";
+
+  const reply = addMessage("Processando sua mensagem...", "bot");
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message})
+    });
+
+    let data;
+
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("O servidor retornou uma resposta inválida.");
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Falha na comunicação.");
+    }
+
+    const answer = data.reply || "Não recebi uma resposta.";
+
+    reply.textContent = answer;
+    speakJarbiss(answer);
+
+  } catch (error) {
+    reply.textContent = "Não consegui conectar à IA. " + error.message;
+  } finally {
+    sendButton.disabled = false;
+    sendButton.textContent = "ENVIAR ↗";
+    input.focus();
+  }
+});
+
+/* INICIALIZAÇÃO */
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.getVoices();
+}
+
+checkServer();
+
+/* ENCERRAR A TELA DE CARREGAMENTO */
+function finishBoot() {
+  const screen = document.getElementById("bootScreen");
+  if (!screen) return;
+
+  setTimeout(() => {
+    screen.classList.add("boot-hidden");
+  }, 1200);
+}
+
+if (document.readyState === "complete") {
+  finishBoot();
+} else {
+  window.addEventListener("load", finishBoot, {once: true});
+}
 </script>
+
 </body>
 </html>
