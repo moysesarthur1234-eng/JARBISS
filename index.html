@@ -17,9 +17,7 @@
       --muted: #8ba5ba;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -31,9 +29,7 @@
       font-family: Arial, sans-serif;
     }
 
-    button, input {
-      font: inherit;
-    }
+    button, input { font: inherit; }
 
     .app {
       max-width: 1000px;
@@ -77,10 +73,7 @@
       white-space: nowrap;
     }
 
-    .hero {
-      text-align: center;
-      padding: 22px 0 12px;
-    }
+    .hero { text-align: center; padding: 22px 0 12px; }
 
     .orb {
       width: 116px;
@@ -89,23 +82,16 @@
       border-radius: 50%;
       background: radial-gradient(
         circle at 40% 35%,
-        #ffffff 0%,
-        #a7f7ff 9%,
-        #39d9ff 23%,
-        #126aab 48%,
-        #07111f 73%
+        #ffffff 0%, #a7f7ff 9%, #39d9ff 23%,
+        #126aab 48%, #07111f 73%
       );
-      box-shadow:
-        0 0 25px #23caff77,
-        0 0 65px #168ad944,
+      box-shadow: 0 0 25px #23caff77, 0 0 65px #168ad944,
         inset 0 0 20px #ffffff66;
       animation: pulse 3s ease-in-out infinite;
     }
 
     .orb.speaking {
-      box-shadow:
-        0 0 40px #42e5ff,
-        0 0 90px #168ad977;
+      box-shadow: 0 0 40px #42e5ff, 0 0 90px #168ad977;
     }
 
     @keyframes pulse {
@@ -113,10 +99,7 @@
       50% { transform: scale(1.04); }
     }
 
-    .hero h2 {
-      font-size: 19px;
-      margin: 0 0 7px;
-    }
+    .hero h2 { font-size: 19px; margin: 0 0 7px; }
 
     #status {
       color: var(--muted);
@@ -184,20 +167,13 @@
       margin-bottom: 7px;
     }
 
-    /* Formatação das respostas da IA */
-
     .msg-content p {
       margin: 8px 0;
       white-space: pre-wrap;
     }
 
-    .msg-content p:first-child {
-      margin-top: 0;
-    }
-
-    .msg-content p:last-child {
-      margin-bottom: 0;
-    }
+    .msg-content p:first-child { margin-top: 0; }
+    .msg-content p:last-child { margin-bottom: 0; }
 
     .msg-content h1,
     .msg-content h2,
@@ -210,14 +186,8 @@
     .msg-content h1 { font-size: 20px; }
     .msg-content h2 { font-size: 18px; }
     .msg-content h3 { font-size: 16px; }
-
-    .msg-content strong {
-      color: #ffffff;
-    }
-
-    .msg-content em {
-      color: #bdefff;
-    }
+    .msg-content strong { color: #ffffff; }
+    .msg-content em { color: #bdefff; }
 
     .msg-content ul,
     .msg-content ol {
@@ -225,9 +195,7 @@
       margin: 8px 0;
     }
 
-    .msg-content li {
-      margin: 5px 0;
-    }
+    .msg-content li { margin: 5px 0; }
 
     .msg-content table {
       display: block;
@@ -254,9 +222,7 @@
       color: var(--cyan);
     }
 
-    .msg-content tr:nth-child(even) td {
-      background: #0b1c2b;
-    }
+    .msg-content tr:nth-child(even) td { background: #0b1c2b; }
 
     .msg-content br {
       display: block;
@@ -298,19 +264,11 @@
       transition: opacity .2s, transform .2s;
     }
 
-    button:hover {
-      transform: translateY(-1px);
-    }
+    button:hover { transform: translateY(-1px); }
 
-    button:disabled {
-      opacity: .5;
-      cursor: wait;
-    }
+    button:disabled { opacity: .5; cursor: wait; }
 
-    #send {
-      color: #03111a;
-      background: var(--cyan);
-    }
+    #send { color: #03111a; background: var(--cyan); }
 
     .actions {
       display: flex;
@@ -364,8 +322,7 @@
       #message { padding: 12px 10px; }
       #send { padding: 10px 12px; }
       .actions button { padding: 11px 6px; }
-      .msg-content th,
-      .msg-content td { padding: 7px; }
+      .msg-content th, .msg-content td { padding: 7px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -450,8 +407,41 @@
     const historyButton = document.getElementById("history");
 
     let voiceEnabled = false;
+
     const HISTORY_KEY = "jarbiss_history_v1";
     const NOTES_KEY = "jarbiss_notes_v1";
+    const CONVERSATION_ID_KEY = "jarbiss_conversation_id";
+
+    // Mantém um identificador para a conversa atual.
+    function getConversationId() {
+      let id = localStorage.getItem(CONVERSATION_ID_KEY);
+
+      if (!id) {
+        id = "conv_" + (
+          window.crypto &&
+          typeof window.crypto.randomUUID === "function"
+            ? window.crypto.randomUUID()
+            : Date.now() + "_" + Math.random().toString(36).slice(2)
+        );
+
+        localStorage.setItem(CONVERSATION_ID_KEY, id);
+      }
+
+      return id;
+    }
+
+    // Cria um identificador novo sem apagar o histórico salvo.
+    function newConversationId() {
+      const id = "conv_" + (
+        window.crypto &&
+        typeof window.crypto.randomUUID === "function"
+          ? window.crypto.randomUUID()
+          : Date.now() + "_" + Math.random().toString(36).slice(2)
+      );
+
+      localStorage.setItem(CONVERSATION_ID_KEY, id);
+      return id;
+    }
 
     function loadHistory() {
       try {
@@ -463,12 +453,23 @@
 
     function saveHistoryEntry(text, sender) {
       const history = loadHistory();
-      history.push({ text: String(text), sender, time: new Date().toLocaleString("pt-BR") });
-      // Mantém somente as 200 mensagens mais recentes.
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-200)));
+
+      history.push({
+        text: String(text),
+        sender,
+        time: new Date().toLocaleString("pt-BR")
+      });
+
+      try {
+        localStorage.setItem(
+          HISTORY_KEY,
+          JSON.stringify(history.slice(-200))
+        );
+      } catch (error) {
+        console.warn("Não foi possível salvar o histórico local.", error);
+      }
     }
 
-    // Converte texto Markdown em elementos HTML seguros.
     function escaparHTML(texto) {
       return String(texto)
         .replace(/&/g, "&amp;")
@@ -488,7 +489,6 @@
     function formatarResposta(texto) {
       const linhas = escaparHTML(texto).replace(/\r/g, "").split("\n");
       const resultado = [];
-
       let listaAtual = null;
 
       function fecharLista() {
@@ -516,7 +516,6 @@
         const linha = linhas[i];
         const limpa = linha.trim();
 
-        // Tabelas Markdown
         if (
           limpa.includes("|") &&
           i + 1 < linhas.length &&
@@ -533,16 +532,10 @@
           });
 
           tabela += "</tr></thead><tbody>";
-
           i += 2;
 
           while (i < linhas.length && linhas[i].trim().includes("|")) {
-            const atual = linhas[i].trim();
-
-            if (!atual) break;
-
-            const valores = celulasTabela(atual);
-
+            const valores = celulasTabela(linhas[i].trim());
             tabela += "<tr>";
 
             for (let j = 0; j < cabecalhos.length; j++) {
@@ -561,12 +554,10 @@
           continue;
         }
 
-        // Títulos: #, ## e ###
         const titulo = limpa.match(/^(#{1,3})\s+(.+)$/);
 
         if (titulo) {
           fecharLista();
-
           const nivel = titulo[1].length;
 
           resultado.push(
@@ -574,11 +565,9 @@
             formatarTexto(titulo[2]) +
             "</h" + nivel + ">"
           );
-
           continue;
         }
 
-        // Listas com marcadores
         const item = limpa.match(/^[-*+]\s+(.+)$/);
 
         if (item) {
@@ -588,14 +577,10 @@
             listaAtual = "ul";
           }
 
-          resultado.push(
-            "<li>" + formatarTexto(item[1]) + "</li>"
-          );
-
+          resultado.push("<li>" + formatarTexto(item[1]) + "</li>");
           continue;
         }
 
-        // Listas numeradas
         const itemNumerado = limpa.match(/^\d+[.)]\s+(.+)$/);
 
         if (itemNumerado) {
@@ -608,23 +593,17 @@
           resultado.push(
             "<li>" + formatarTexto(itemNumerado[1]) + "</li>"
           );
-
           continue;
         }
 
         fecharLista();
 
-        if (!limpa) {
-          continue;
-        }
+        if (!limpa) continue;
 
-        resultado.push(
-          "<p>" + formatarTexto(linha) + "</p>"
-        );
+        resultado.push("<p>" + formatarTexto(linha) + "</p>");
       }
 
       fecharLista();
-
       return resultado.join("");
     }
 
@@ -649,8 +628,8 @@
       bubble.appendChild(content);
       chat.appendChild(bubble);
       chat.scrollTop = chat.scrollHeight;
-      saveHistoryEntry(text, sender);
 
+      saveHistoryEntry(text, sender);
       return bubble;
     }
 
@@ -659,7 +638,6 @@
 
       window.speechSynthesis.cancel();
 
-      // Remove os símbolos Markdown antes da leitura em voz alta.
       const textoFalado = String(text)
         .replace(/^#{1,3}\s+/gm, "")
         .replace(/\*\*(.*?)\*\*/g, "$1")
@@ -704,6 +682,7 @@
       return "";
     }
 
+    // Envia a mensagem e o identificador para o servidor de IA.
     async function sendMessage(message) {
       addMessage(message, "user");
 
@@ -727,7 +706,10 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({
+            message,
+            conversationId: getConversationId()
+          })
         });
 
         const raw = await response.text();
@@ -814,10 +796,16 @@
     });
 
     clearButton.addEventListener("click", function() {
-      if (!confirm("Iniciar uma nova conversa? O histórico salvo continuará disponível. Esta ação limpa apenas a conversa exibida.")) return;
+      if (!confirm(
+        "Iniciar uma nova conversa? O histórico salvo continuará disponível. Esta ação limpa apenas a conversa exibida."
+      )) return;
+
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
+
+      // Importante: a próxima mensagem terá um ID de conversa novo.
+      newConversationId();
 
       chat.replaceChildren();
 
@@ -836,10 +824,19 @@
 
     notesButton.addEventListener("click", function() {
       const atual = localStorage.getItem(NOTES_KEY) || "";
-      const novo = prompt("BLOCO DE NOTAS JARBISS\n\nEscreva ou edite suas anotações. Para apagar tudo, deixe vazio e confirme.", atual);
+
+      const novo = prompt(
+        "BLOCO DE NOTAS JARBISS\n\nEscreva ou edite suas anotações. Para apagar tudo, deixe vazio e confirme.",
+        atual
+      );
+
       if (novo === null) return;
+
       if (!novo.trim()) {
-        if (atual && !confirm("Tem certeza de que deseja apagar todas as anotações?")) return;
+        if (atual && !confirm(
+          "Tem certeza de que deseja apagar todas as anotações?"
+        )) return;
+
         localStorage.removeItem(NOTES_KEY);
         alert("Anotações apagadas.");
       } else {
@@ -850,14 +847,23 @@
 
     historyButton.addEventListener("click", function() {
       const history = loadHistory();
+
       if (!history.length) {
         alert("Ainda não há mensagens salvas no histórico.");
         return;
       }
+
       const resumo = history.slice(-30).map(item =>
-        "[" + item.time + "] " + (item.sender === "user" ? "VOCÊ" : "JARBISS") + ": " + item.text
+        "[" + item.time + "] " +
+        (item.sender === "user" ? "VOCÊ" : "JARBISS") +
+        ": " + item.text
       ).join("\n\n");
-      alert("HISTÓRICO RECENTE (até 30 mensagens)\n\n" + resumo + "\n\nAs mensagens ficam salvas somente neste navegador.");
+
+      alert(
+        "HISTÓRICO RECENTE (até 30 mensagens)\n\n" +
+        resumo +
+        "\n\nAs mensagens ficam salvas somente neste navegador."
+      );
     });
 
     window.addEventListener("error", function() {
@@ -881,43 +887,43 @@
       micButton.title = "Falar com o JARBISS";
       micButton.setAttribute("aria-label", "Falar com o JARBISS");
 
-      
-Object.assign(micButton.style, {
-  position: "fixed",
-  right: "22px",
-  bottom: "22px",
-  zIndex: "99999",
-  width: "62px",
-  height: "62px",
-  borderRadius: "50%",
-  border: "2px solid #b89b5e",
-  background: "linear-gradient(145deg, #292923, #10110f)",
-  color: "#e1c782",
-  fontSize: "27px",
-  cursor: "pointer",
-  boxShadow: "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18",
-  transition: "all .25s ease"
-});
+      Object.assign(micButton.style, {
+        position: "fixed",
+        right: "22px",
+        bottom: "22px",
+        zIndex: "99999",
+        width: "62px",
+        height: "62px",
+        borderRadius: "50%",
+        border: "2px solid #b89b5e",
+        background: "linear-gradient(145deg, #292923, #10110f)",
+        color: "#e1c782",
+        fontSize: "27px",
+        cursor: "pointer",
+        boxShadow: "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18",
+        transition: "all .25s ease"
+      });
 
-micButton.addEventListener("mouseenter", function () {
-  micButton.style.boxShadow =
-    "0 0 25px #b89b5e77, inset 0 0 14px #b89b5e22";
-  micButton.style.transform = "scale(1.06)";
-});
+      micButton.addEventListener("mouseenter", function () {
+        micButton.style.boxShadow =
+          "0 0 25px #b89b5e77, inset 0 0 14px #b89b5e22";
+        micButton.style.transform = "scale(1.06)";
+      });
 
-micButton.addEventListener("mouseleave", function () {
-  micButton.style.boxShadow =
-    "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18";
-  micButton.style.transform = "scale(1)";
-});
-
+      micButton.addEventListener("mouseleave", function () {
+        micButton.style.boxShadow =
+          "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18";
+        micButton.style.transform = "scale(1)";
+      });
 
       micButton.addEventListener("click", function () {
         const SpeechRecognition =
           window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
-          alert("Este navegador não oferece reconhecimento de voz nesta página. O botão pode aparecer, mas o reconhecimento depende do suporte do navegador.");
+          alert(
+            "Este navegador não oferece reconhecimento de voz nesta página. O botão pode aparecer, mas o reconhecimento depende do suporte do navegador."
+          );
           return;
         }
 
@@ -930,8 +936,11 @@ micButton.addEventListener("mouseleave", function () {
         micButton.disabled = true;
 
         recognition.onresult = function (event) {
-          const texto = event.results && event.results[0] &&
-            event.results[0][0] ? event.results[0][0].transcript : "";
+          const texto = event.results &&
+            event.results[0] &&
+            event.results[0][0]
+              ? event.results[0][0].transcript
+              : "";
 
           if (!texto.trim()) {
             alert("Não consegui entender. Tente falar novamente.");
@@ -942,7 +951,6 @@ micButton.addEventListener("mouseleave", function () {
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.focus();
 
-          // Envia a mensagem reconhecida para o JARBISS.
           if (typeof form.requestSubmit === "function") {
             form.requestSubmit();
           } else {
@@ -954,12 +962,20 @@ micButton.addEventListener("mouseleave", function () {
         };
 
         recognition.onerror = function (event) {
-          let mensagem = "Não consegui ouvir. Verifique a permissão do microfone e tente novamente.";
-          if (event.error === "not-allowed" || event.error === "service-not-allowed") {
-            mensagem = "O acesso ao microfone foi bloqueado. Verifique as permissões do navegador.";
+          let mensagem =
+            "Não consegui ouvir. Verifique a permissão do microfone e tente novamente.";
+
+          if (
+            event.error === "not-allowed" ||
+            event.error === "service-not-allowed"
+          ) {
+            mensagem =
+              "O acesso ao microfone foi bloqueado. Verifique as permissões do navegador.";
           } else if (event.error === "no-speech") {
-            mensagem = "Não detectei fala. Toque no microfone e fale novamente.";
+            mensagem =
+              "Não detectei fala. Toque no microfone e fale novamente.";
           }
+
           alert(mensagem);
         };
 
@@ -980,6 +996,5 @@ micButton.addEventListener("mouseleave", function () {
       document.body.appendChild(micButton);
     })();
   </script>
-
 </body>
 </html>
