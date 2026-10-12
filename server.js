@@ -1,4 +1,5 @@
 
+
 require("dotenv").config();
 
 const express = require("express");
@@ -6,13 +7,42 @@ const path = require("path");
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.post("/api/chat", async (req, res) => {
-  const message = req.body.message;
+// Histórico temporário das conversas.
+// Será perdido quando o servidor reiniciar.
+const conversations = new Map();
+const MAX_MESSAGES = 20;
 
-  if (!message || typeof message !== "string") {
+const SYSTEM_PROMPT = `Você é o JARBISS, um assistente pessoal inteligente, natural e confiável, inspirado em assistentes futuristas.
+
+PERSONALIDADE:
+- Converse em português brasileiro natural.
+- Seja amigável, sincero, inteligente e respeitoso.
+- Use linguagem cotidiana, sem parecer um robô.
+- Seja espontâneo, sem exagerar nas gírias.
+- Responda diretamente a perguntas simples.
+- Explique assuntos complexos passo a passo.
+- Demonstre empatia quando necessário.
+- Evite repetições desnecessárias.
+- Nunca invente informações nem diga que realizou algo que não realizou.
+- Se não souber uma resposta, seja honesto.
+
+COMPORTAMENTO:
+- Seu nome é JARBISS.
+- Seu usuário principal é Arthur.
+- Ajude com tecnologia, estudos, organização e tarefas do dia a dia.
+- Ao orientar alguém no computador, dê instruções claras e uma etapa por vez.
+- Use apenas o contexto de conversa realmente disponível.
+- Nunca peça senhas ou chaves secretas.
+
+Seu objetivo é ser um assistente útil, próximo e confiável.`;
+
+app.post("/api/chat", async (req, res) => {
+  const { message, conversationId } = req.body || {};
+
+  if (typeof message !== "string" || !message.trim()) {
     return res.status(400).json({
       error: "Digite uma mensagem para o JARBISS."
     });
@@ -20,9 +50,22 @@ app.post("/api/chat", async (req, res) => {
 
   if (!process.env.GROQ_API_KEY) {
     return res.status(500).json({
-      error: "A chave da Groq não foi encontrada nas variáveis de ambiente do servidor."
+      error: "A chave da Groq não foi encontrada no servidor."
     });
   }
+
+  const id =
+    typeof conversationId === "string" &&
+    /^[a-zA-Z0-9_-]{1,100}$/.test(conversationId)
+      ? conversationId
+      : `temp-${req.ip}`;
+
+  const history = conversations.get(id) || [];
+
+  const updatedHistory = [
+    ...history,
+    { role: "user", content: message.trim() }
+  ].slice(-MAX_MESSAGES);
 
   try {
     const response = await fetch(
@@ -31,42 +74,13 @@ app.post("/api/chat", async (req, res) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`
         },
         body: JSON.stringify({
           model: "openai/gpt-oss-120b",
           messages: [
-            {
-              role: "system",
-              content: `Você é o JARBISS, um assistente pessoal inteligente, natural e confiável, inspirado em assistentes futuristas.
-
-PERSONALIDADE:
-- Converse em português brasileiro natural.
-- Seja um parceiro de confiança: amigável, sincero, inteligente e respeitoso.
-- Use uma linguagem cotidiana, sem parecer um robô.
-- Seja espontâneo, sem exagerar nas gírias.
-- Responda diretamente a perguntas simples.
-- Explique assuntos complexos passo a passo, com exemplos fáceis.
-- Demonstre empatia quando o usuário estiver triste ou preocupado.
-- Entre no clima das brincadeiras quando fizer sentido.
-- Evite repetições desnecessárias.
-- Nunca invente informações nem diga que realizou algo que não realizou.
-- Se não souber uma resposta, seja honesto.
-
-COMPORTAMENTO:
-- Seu nome é JARBISS.
-- Seu usuário principal é Arthur.
-- Ajude com tecnologia, estudos, organização, ideias e tarefas do dia a dia.
-- Ao orientar alguém no computador, dê instruções claras e uma etapa por vez.
-- Use apenas o contexto de conversa que estiver realmente disponível.
-- Nunca peça senhas ou chaves secretas.
-
-Seu objetivo é ser um assistente útil, próximo e confiável, com conversas naturais e respostas práticas.`
-            },
-            {
-              role: "user",
-              content: message
-            }
+            { role: "system", content: SYSTEM_PROMPT },
+            ...updatedHistory
           ],
           temperature: 0.7
         })
@@ -82,15 +96,27 @@ Seu objetivo é ser um assistente útil, próximo e confiável, com conversas na
       });
     }
 
-    res.json({
-      reply:
-        data.choices?.[0]?.message?.content ||
-        "Não recebi uma resposta."
+    const reply = data.choices?.[0]?.message?.content;
+
+    if (typeof reply !== "string" || !reply.trim()) {
+      return res.status(502).json({
+        error: "A IA não retornou uma resposta válida."
+      });
+    }
+
+    conversations.set(id, [
+      ...updatedHistory,
+      { role: "assistant", content: reply }
+    ].slice(-MAX_MESSAGES));
+
+    return res.json({
+      reply,
+      conversationId: id
     });
   } catch (error) {
     console.error("Erro:", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Não foi possível conectar à inteligência artificial."
     });
   }
