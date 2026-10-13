@@ -1,158 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#04070c">
-  <title>JARBISS — Central de Comando</title>
-  <style>
-    :root{--bg:#04070c;--cyan:#49e7ff;--gold:#d8ad58;--text:#e9f8ff;--muted:#7895aa;--green:#6effc2;--red:#ff6464;--border:rgba(73,231,255,.28)}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at 50% 15%,#10364b 0%,transparent 42%),radial-gradient(ellipse at 50% 60%,#071522 0%,transparent 65%),var(--bg);color:var(--text);font-family:Arial,sans-serif}
-    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25;background-image:linear-gradient(rgba(73,231,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(73,231,255,.08) 1px,transparent 1px);background-size:38px 38px}
-    button,input{font:inherit}button{border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-weight:bold;color:var(--text);background:linear-gradient(145deg,#10283a,#07131f);cursor:pointer;transition:.2s ease}
-    .app{position:relative;z-index:1;max-width:1180px;min-height:100vh;margin:auto;padding:22px;display:flex;flex-direction:column}
-    header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0 20px;border-bottom:1px solid var(--border)}
-    .brand{margin:0;color:#c5f9ff;font-size:29px;font-weight:800;letter-spacing:7px;text-shadow:0 0 18px rgba(73,231,255,.48)}.subtitle{margin:7px 0 0;color:var(--muted);font-size:10px;letter-spacing:3px}
-    .badge{color:var(--green);border:1px solid rgba(110,255,194,.35);background:rgba(6,39,29,.7);border-radius:3px;padding:9px 12px;font:10px Consolas,monospace}
-    .hud-readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.hud-readout{padding:10px 13px;border-left:2px solid var(--gold);border-bottom:1px solid rgba(73,231,255,.12);background:linear-gradient(90deg,rgba(216,173,88,.07),transparent);color:var(--muted);font:10px/1.6 Consolas,monospace}.hud-readout strong{display:block;color:var(--cyan);font-size:11px}
-    .hero{text-align:center;padding:28px 0 25px}.system-label{margin:0 0 24px;color:rgba(73,231,255,.7);font:10px Consolas,monospace;letter-spacing:3px}
-    .reactor-wrap{position:relative;width:220px;height:220px;margin:auto;display:grid;place-items:center}.reactor-ring{position:absolute;border:1px solid rgba(73,231,255,.48);border-radius:50%}
-    .ring-one{inset:8px;border-top-color:var(--gold);border-bottom-color:transparent;animation:spin 12s linear infinite}.ring-two{inset:20px;border-right:2px solid var(--cyan);border-bottom-color:rgba(216,173,88,.7);animation:spinReverse 9s linear infinite}.ring-three{inset:32px;border-style:dashed;border-color:rgba(73,231,255,.3);animation:spin 22s linear infinite}
-    .reactor-ticks{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(73,231,255,.8) 0deg 1deg,transparent 1deg 15deg);mask:radial-gradient(circle,transparent 67%,#000 68% 69%,transparent 70%);animation:spinReverse 35s linear infinite;opacity:.65}
-    .orb{position:relative;width:112px;height:112px;border-radius:50%;border:2px solid rgba(164,247,255,.85);background:radial-gradient(circle at 40% 34%,#fff 0%,#c9fbff 7%,#54efff 18%,#1495c7 34%,#075078 49%,#041522 70%);box-shadow:0 0 13px var(--cyan),0 0 32px rgba(73,231,255,.65);animation:corePulse 3s ease-in-out infinite}
-    .orb.speaking{filter:brightness(1.4);box-shadow:0 0 24px var(--cyan),0 0 65px rgba(73,231,255,.9)}
-    @keyframes spin{to{transform:rotate(360deg)}}@keyframes spinReverse{to{transform:rotate(-360deg)}}@keyframes corePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
-    .hero h2{margin:12px 0 8px;font-size:17px;text-transform:uppercase;letter-spacing:3px}#status{min-height:18px;color:var(--muted);font:11px Consolas,monospace}
-    .chat-panel{position:relative;flex:1;min-height:320px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(73,231,255,.38);border-radius:5px;background:linear-gradient(145deg,rgba(7,20,33,.98),rgba(3,9,16,.98))}
-    .chat-heading{padding:15px 17px;border-bottom:1px solid var(--border);background:rgba(15,49,67,.3);color:var(--cyan);font:11px Consolas,monospace;letter-spacing:2px}
-    #chat{flex:1;height:34vh;min-height:250px;max-height:480px;overflow-y:auto;padding:16px}
-    .msg{max-width:88%;margin:10px 0;padding:12px 15px;border-radius:4px;line-height:1.65;font-size:14px}.bot{margin-right:auto;border:1px solid rgba(73,231,255,.23);background:rgba(13,37,54,.9)}.user{margin-left:auto;border:1px solid rgba(73,231,255,.43);background:rgba(12,53,73,.92)}
-    .msg-label{display:block;margin-bottom:7px;color:var(--cyan);font:10px Consolas,monospace;letter-spacing:1.5px}.msg-content p{margin:8px 0;white-space:pre-wrap}
-    .msg-content strong{color:#ffffff !important;font-weight:800 !important;text-shadow:0 0 8px rgba(73,231,255,.6)}
-    .msg-content em{color:#bdefff;font-style:italic}.msg-content code{color:var(--gold);background:rgba(0,0,0,.3);padding:2px 5px;border-radius:3px}
-    .msg-content table{width:100%;overflow-x:auto;border-collapse:collapse;margin:12px 0;font-size:13px}.msg-content th,.msg-content td{border:1px solid #28516a;padding:9px 10px;text-align:left}.msg-content th{background:#12364c;color:var(--cyan)}
-    .composer{display:flex;gap:9px;padding:13px;border-top:1px solid var(--border);background:rgba(3,10,17,.97)}#message{flex:1;padding:14px;color:white;background:rgba(4,17,28,.96);border:1px solid rgba(73,231,255,.3);border-radius:4px;outline:none}#send{min-width:95px;color:#03111a;background:linear-gradient(135deg,#baf8ff,#39c8ed);border-color:var(--cyan);border-radius:4px;text-transform:uppercase}
-    .actions{display:flex;gap:10px;margin-top:13px}.actions button{flex:1;font-size:12px}.actions button.active{color:var(--cyan);border-color:var(--cyan)}
-    .tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.tools button{flex:1 1 140px;font-size:12px}
-    footer{padding:21px 0 5px;color:#5f7e91;text-align:center;font:10px Consolas,monospace;letter-spacing:2px}
-    #jarbiss-mic-btn{position:fixed;right:23px;bottom:23px;z-index:20;display:grid;place-items:center;width:60px;height:60px;border:2px solid var(--gold);border-radius:50%;color:#ffe4a3;background:linear-gradient(145deg,#24251f,#080d13);font-size:25px}#jarbiss-mic-btn.listening{border-color:var(--red);animation:corePulse 1s ease-in-out infinite}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARBISS — COMMAND CENTER</title>
+<style>
+:root{--bg:#030a14;--panel:#0a1a2e;--panel2:#0f2742;--cyan:#00e5ff;--cyan2:#00b8ff;--blue:#0a84ff;--text:#e6f6ff;--muted:#6e8ea8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 600px at 50% 0%, #0e2a4a 0%, #030a14 60%);color:var(--text);font-family:Inter, Arial, sans-serif;overflow:hidden}
+.app{display:grid;grid-template-columns:260px 1fr 300px;grid-template-rows:56px 1fr 84px;height:100vh;gap:12px;padding:12px}
+.topbar{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:linear-gradient(90deg, rgba(0,229,255,.08), rgba(0,0,0,0));border:1px solid rgba(0,229,255,.2);border-radius:12px;backdrop-filter:blur(10px)}
+.topbar.time{color:var(--cyan);font:700 18px Consolas,monospace;letter-spacing:1px;text-shadow:0 0 12px var(--cyan)}
+.badge{font:10px Consolas,monospace;color:var(--cyan);border:1px solid rgba(0,229,255,.3);padding:6px 10px;border-radius:20px;background:rgba(0,229,255,.08)}
+.sidebar{grid-row:2 / 4;background:linear-gradient(180deg, #0a1f38, #081526);border:1px solid rgba(0,229,255,.18);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.logo{font-weight:900;letter-spacing:4px;color:#c9f5ff;font-size:18px;text-shadow:0 0 10px var(--cyan)}
+.logo span{display:block;font-size:8px;letter-spacing:3px;color:var(--muted)}
+.menu{display:flex;flex-direction:column;gap:6px}.menu a{padding:10px 12px;border-radius:8px;color:#9ec2d8;text-decoration:none;font-size:13px;display:flex;gap:10px;align-items:center;border:1px solid transparent}
+.menu a.active{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.25);color:white;box-shadow:inset 0 0 12px rgba(0,229,255,.15)}
+.card{background:linear-gradient(180deg, rgba(15,39,66,.9), rgba(10,26,46,.9));border:1px solid rgba(0,229,255,.18);border-radius:12px;padding:12px;box-shadow:0 0 20px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.03)}
+.card h3{margin:0 0 10px;font:11px Consolas,monospace;letter-spacing:1.5px;color:var(--cyan)}
+.center{display:grid;grid-template-rows:1.2fr 1fr 1fr;gap:12px;overflow:auto}
+.hero{position:relative;display:grid;place-items:center;overflow:hidden}
+.hero.ring{position:absolute;width:300px;height:300px;border-radius:50%;border:1px dashed rgba(0,229,255,.3);animation:spin 20s linear infinite}
+.hero.ring2{width:360px;height:360px;border:1px solid rgba(0,229,255,.15);border-top-color:var(--cyan);animation:spinReverse 12s linear infinite}
+.hero.core{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 40% 30%, #fff, #7af0ff 15%, #00b8ff 35%, #051423 70%);box-shadow:0 0 30px var(--cyan), 0 0 80px rgba(0,229,255,.4);display:grid;place-items:center;color:white;font-weight:900;letter-spacing:6px;text-shadow:0 0 10px var(--cyan)}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes spinReverse{to{transform:rotate(-360deg)}}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pill{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);border-radius:8px;font-size:12px}
+.pill b{color:var(--cyan)}
+.feed{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto}
+.feed div{padding:8px 10px;border-left:2px solid var(--cyan);background:rgba(0,229,255,.06);font-size:11px;border-radius:0 8px 8px 0}
+.right{grid-row:2 / 4;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.composer{grid-column:1 / -1;display:flex;align-items:center;gap:12px;padding:12px 18px;background:linear-gradient(90deg, #0a1f38, #0b2644);border:1px solid rgba(0,229,255,.25);border-radius:14px}
+.composer input{flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(0,229,255,.2);border-radius:30px;padding:16px 18px;color:white;outline:none}
+.composer button{background:linear-gradient(90deg, #00e5ff, #0a84ff);border:none;border-radius:30px;padding:14px 22px;font-weight:800;color:#00131f;cursor:pointer;box-shadow:0 0 15px rgba(0,229,255,.5)}
+#chat{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:8px}.msg{padding:8px 12px;border-radius:8px;font-size:13px;line-height:1.5}.msg.user{align-self:flex-end;background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.3)}.msg.bot{align-self:flex-start;background:rgba(255,255,255,.05)}
+.msg strong{color:#fff;font-weight:800}
+@media(max-width:1100px){.app{grid-template-columns:1fr;grid-template-rows:auto;overflow:auto;height:auto}.sidebar,.right,.center{grid-column:1;grid-row:auto}.topbar{grid-column:1}}
+</style>
 </head>
 <body>
-  <div class="app">
-    <header><div><h1 class="brand">JARBISS</h1><p class="subtitle">STARK-STYLE PERSONAL AI // VERSION 2.0</p></div><div class="badge" id="connection">● INTERFACE ONLINE</div></header>
-    <section class="hud-readouts"><div class="hud-readout">INTERFACE<strong>HUD / ATIVO</strong></div><div class="hud-readout">NÚCLEO<strong id="hud-core">ENERGIA ESTÁVEL</strong></div><div class="hud-readout">INTELIGÊNCIA<strong>JARBISS AI</strong></div></section>
-    <section class="hero"><p class="system-label">◈ ARC CORE // SYSTEM POWERED ◈</p><div class="reactor-wrap"><div class="reactor-ring ring-one"></div><div class="reactor-ring ring-two"></div><div class="reactor-ring ring-three"></div><div class="reactor-ticks"></div><div class="orb" id="orb"></div></div><h2>À sua disposição.</h2><div id="status">Sistema inicializado. Aguardando comando.</div></section>
-    <section class="chat-panel"><div class="chat-heading">HOLOGRAPHIC COMMUNICATION // CHANNEL 01</div><div id="chat"><div class="msg bot"><span class="msg-label">JARBISS // ONLINE</span><div class="msg-content"><p>Olá, parceiro! Sou o JARBISS, sua IA pessoal.</p><p>Todos os sistemas visuais estão prontos.</p></div></div></div><form class="composer" id="form"><input id="message" type="text" placeholder="Digite seu comando..." autocomplete="off" required><button id="send" type="submit">Enviar</button></form></section>
-    <div class="actions"><button type="button" id="voice">🔊 Voz: desligada</button><button type="button" id="clear">↻ Nova conversa</button></div>
-    <div class="tools"><button type="button" id="notes">▤ Bloco de notas</button><button type="button" id="history">◷ Histórico</button></div>
-    <footer>JARBISS SYSTEMS • HOLOGRAPHIC COMMAND INTERFACE</footer>
+<div class="app">
+  <div class="topbar">
+    <div style="display:flex;gap:12px;align-items:center"><span class="badge">SYSTEM STATUS ● OPTIMAL</span></div>
+    <div class="time" id="clock">11:18:21 am</div>
+    <div style="display:flex;gap:8px"><span class="badge">Operator</span></div>
   </div>
-<script>
-"use strict";
-const form=document.getElementById("form"),input=document.getElementById("message"),sendButton=document.getElementById("send"),chat=document.getElementById("chat"),statusText=document.getElementById("status"),connection=document.getElementById("connection"),voiceButton=document.getElementById("voice"),clearButton=document.getElementById("clear"),orb=document.getElementById("orb"),notesButton=document.getElementById("notes"),historyButton=document.getElementById("history"),hudCore=document.getElementById("hud-core");
-let voiceEnabled=false,isSending=false;
-const HISTORY_KEY="jarbiss_history_v1",NOTES_KEY="jarbiss_notes_v1",CONVERSATION_ID_KEY="jarbiss_conversation_id";
-function createId(){return"conv_"+(window.crypto&&window.crypto.randomUUID?window.crypto.randomUUID():Date.now()+"_"+Math.random().toString(36).slice(2))}
-function getConversationId(){try{let id=localStorage.getItem(CONVERSATION_ID_KEY);if(!id){id=createId();localStorage.setItem(CONVERSATION_ID_KEY,id)}return id}catch{return createId()}}
-function newConversationId(){const id=createId();try{localStorage.setItem(CONVERSATION_ID_KEY,id)}catch(e){}return id}
-function loadHistory(){try{const d=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");return Array.isArray(d)?d:[]}catch{return[]}}
-function saveHistoryEntry(text,sender){const h=loadHistory();h.push({text:String(text),sender,time:new Date().toLocaleString("pt-BR"),conversationId:getConversationId()});try{localStorage.setItem(HISTORY_KEY,JSON.stringify(h.slice(-200)))}catch(e){}}
 
-// CORREÇÃO DO NEGRITO - AGORA FUNCIONA NO GITHUB
-function escaparHTML(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function formatarTexto(t){
-  const temp = document.createElement("div");
-  // Escapa primeiro pra segurança
-  temp.textContent = String(t);
-  let html = temp.innerHTML;
-  // Depois aplica markdown - ESSA ORDEM CORRIGE O BUG DO **
-  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-             .replace(/__(.*?)__/g, "<strong>$1</strong>")
-             .replace(/\*(.*?)\*/g, "<em>$1</em>")
-             .replace(/_(.*?)_/g, "<em>$1</em>")
-             .replace(/`([^`]+)`/g, "<code>$1</code>");
-  return html;
-}
-function formatarResposta(texto){
-  const linhas=String(texto).split(/\r?\n/);const resultado=[];let listaAtual=null;
-  function fecharLista(){if(listaAtual){resultado.push("</"+listaAtual+">");listaAtual=null}}
-  function celulasTabela(l){return l.trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=>c.trim())}
-  function separadorTabela(l){const c=celulasTabela(l);return c.length>0&&c.every(x=>/^:?-{3,}:?$/.test(x))}
-  for(let i=0;i<linhas.length;i++){
-    const linha=linhas[i],limpa=linha.trim();
-    if(limpa.includes("|")&&i+1<linhas.length&&linhas[i+1].includes("|")&&separadorTabela(linhas[i+1])){
-      fecharLista();const cab=celulasTabela(linha);let tabela="<table><thead><tr>";cab.forEach(c=>{tabela+="<th>"+formatarTexto(c)+"</th>"});tabela+="</tr></thead><tbody>";i+=2;
-      while(i<linhas.length&&linhas[i].trim().includes("|")){const vals=celulasTabela(linhas[i].trim());tabela+="<tr>";for(let j=0;j<cab.length;j++){tabela+="<td>"+formatarTexto(vals[j]||"")+"</td>"}tabela+="</tr>";i++}
-      tabela+="</tbody></table>";resultado.push(tabela);i--;continue;
-    }
-    const titulo=limpa.match(/^(#{1,3})\s+(.+)$/);if(titulo){fecharLista();const n=titulo[1].length;resultado.push("<h"+n+">"+formatarTexto(titulo[2])+"</h"+n+">");continue}
-    const item=limpa.match(/^[-*+]\s+(.+)$/);if(item){if(listaAtual!=="ul"){fecharLista();resultado.push("<ul>");listaAtual="ul"}resultado.push("<li>"+formatarTexto(item[1])+"</li>");continue}
-    const num=limpa.match(/^\d+[.)]\s+(.+)$/);if(num){if(listaAtual!=="ol"){fecharLista();resultado.push("<ol>");listaAtual="ol"}resultado.push("<li>"+formatarTexto(num[1])+"</li>");continue}
-    fecharLista();if(!limpa)continue;resultado.push("<p>"+formatarTexto(linha)+"</p>");
-  }fecharLista();return resultado.join("");
-}
-function addMessage(text,sender){
-  const b=document.createElement("div");b.className="msg "+sender;
-  const label=document.createElement("span");label.className="msg-label";label.textContent=sender==="user"?"VOCÊ":"JARBISS";
-  const content=document.createElement("div");content.className="msg-content";
-  if(sender==="user"){content.textContent=text}else{content.innerHTML=formatarResposta(text)}
-  b.appendChild(label);b.appendChild(content);chat.appendChild(b);chat.scrollTop=chat.scrollHeight;saveHistoryEntry(text,sender);return b;
-}
-function speak(text){
-  if(!voiceEnabled||!("speechSynthesis"in window))return;
-  const synth=window.speechSynthesis;synth.cancel();
-  const textoFalado=String(text).replace(/```[\s\S]*?```/g," ").replace(/`([^`]+)`/g,"$1").replace(/^#{1,6}\s*/gm,"").replace(/\*\*(.*?)\*\*/g,"$1").replace(/__(.*?)__/g,"$1").replace(/\*([^*\n]+)\*/g,"$1").replace(/_([^_\n]+)_/g,"$1").replace(/~~(.*?)~~/g,"$1").replace(/!\[([^\]]*)\]\([^)]+\)/g,"$1").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/^\s*[-*+]\s+/gm,"").replace(/^\s*\d+[.)]\s+/gm,"").replace(/^\s*>\s?/gm,"").replace(/[#*`_~|]+/g," ").replace(/[\u{1F300}-\u{1FAFF}]/gu,"").replace(/[ \t]{2,}/g," ").trim();
-  if(!textoFalado)return;
-  const u=new SpeechSynthesisUtterance(textoFalado);u.lang="pt-BR";u.rate=0.94;u.pitch=0.92;
-  u.onstart=()=>{orb.classList.add("speaking");hudCore.textContent="SAÍDA DE ÁUDIO"};u.onend=()=>{orb.classList.remove("speaking");hudCore.textContent="ENERGIA ESTÁVEL"};u.onerror=()=>{orb.classList.remove("speaking");hudCore.textContent="ENERGIA ESTÁVEL"};
-  function configurarVoz(){const vozes=synth.getVoices();const br=vozes.filter(v=>/^pt-BR$/i.test(v.lang));const escolha=br.find(v=>/natural/i.test(v.name))||br.find(v=>/google/i.test(v.name))||br[0];if(escolha)u.voice=escolha;synth.speak(u)}
-  if(synth.getVoices().length>0){configurarVoz()}else{synth.addEventListener("voiceschanged",configurarVoz,{once:true})}
-}
-function extractReply(data){
-  if(typeof data==="string")return data;
-  if(data&&typeof data==="object"){
-    if(typeof data.reply==="string")return data.reply;if(typeof data.response==="string")return data.response;if(typeof data.message==="string")return data.message;if(typeof data.content==="string")return data.content;
-    const choice=data.choices&&data.choices[0];if(choice&&choice.message&&typeof choice.message.content==="string")return choice.message.content;
-  }return"";
-}
-async function sendMessage(message){
-  if(isSending||!message.trim())return;isSending=true;addMessage(message,"user");input.value="";sendButton.disabled=true;input.disabled=true;
-  statusText.textContent="Processando comando...";connection.textContent="● PROCESSANDO";hudCore.textContent="ANALISANDO";orb.classList.add("speaking");
-  const waiting=addMessage("Analisando sua solicitação...","bot");
-  try{
-    const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,conversationId:getConversationId()})});
-    const raw=await response.text();let data;try{data=JSON.parse(raw)}catch{throw new Error("O servidor retornou uma resposta inválida.")}
-    if(!response.ok){throw new Error(data.error||data.message||"Erro: "+response.status)}
-    const reply=extractReply(data);if(!reply){throw new Error("Servidor respondeu sem texto.")}
-    waiting.remove();addMessage(reply,"bot");statusText.textContent="Comando concluído.";connection.textContent="● INTERFACE ONLINE";hudCore.textContent="ENERGIA ESTÁVEL";speak(reply);
-  }catch(error){
-    waiting.remove();addMessage("Não consegui consultar a IA agora. "+error.message+" Verifique se o servidor e a Groq estão ativos.","bot");
-    statusText.textContent="Falha ao consultar a IA.";connection.textContent="● VERIFICAR SERVIDOR";hudCore.textContent="CONEXÃO INDISPONÍVEL";
-  }finally{isSending=false;sendButton.disabled=false;input.disabled=false;input.focus();orb.classList.remove("speaking");chat.scrollTop=chat.scrollHeight}
-}
-form.addEventListener("submit",function(e){e.preventDefault();const m=input.value.trim();if(m&&!isSending)sendMessage(m)});
-voiceButton.addEventListener("click",function(){voiceEnabled=!voiceEnabled;voiceButton.textContent=voiceEnabled?"🔊 Voz: ligada":"🔊 Voz: desligada";voiceButton.classList.toggle("active",voiceEnabled);if(!voiceEnabled&&"speechSynthesis"in window){window.speechSynthesis.cancel();orb.classList.remove("speaking");hudCore.textContent="ENERGIA ESTÁVEL"}else{speak("Voz ativada. Estou à sua disposição, parceiro.")}});
-clearButton.addEventListener("click",function(){if(!confirm("Nova conversa? Histórico salvo continuará."))return;if("speechSynthesis"in window){window.speechSynthesis.cancel()}newConversationId();chat.replaceChildren();addMessage("Nova conversa iniciada.","bot");statusText.textContent="Aguardando comando.";connection.textContent="● INTERFACE ONLINE";hudCore.textContent="ENERGIA ESTÁVEL";input.value="";input.focus()});
-notesButton.addEventListener("click",function(){let atual="";try{atual=localStorage.getItem(NOTES_KEY)||""}catch{alert("Bloqueado.");return}const novo=prompt("JARBISS // BLOCO DE NOTAS\n\nEscreva ou edite suas anotações:",atual);if(novo===null)return;if(!novo.trim()){if(atual&&!confirm("Apagar tudo?"))return;localStorage.removeItem(NOTES_KEY);alert("Apagadas.")}else{try{localStorage.setItem(NOTES_KEY,novo);alert("Salvo.")}catch{alert("Erro ao salvar.")}}});
-historyButton.addEventListener("click",function(){const h=loadHistory();if(!h.length){alert("Sem histórico.");return}const resumo=h.slice(-30).map(i=>"["+(i.time||"sem data")+"] "+(i.sender==="user"?"VOCÊ":"JARBISS")+": "+i.text).join("\n\n");alert("JARBISS // HISTÓRICO\n\n"+resumo)});
-window.addEventListener("error",function(){statusText.textContent="Erro detectado."});
-(function configurarMicrofone(){
-  const micButton=document.createElement("button");micButton.id="jarbiss-mic-btn";micButton.type="button";micButton.textContent="🎙️";document.body.appendChild(micButton);
-  let rec=false;
-  micButton.addEventListener("click",function(){
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert("Sem reconhecimento de voz neste navegador. Use Chrome.");return}if(rec)return;
-    const recognition=new SR();recognition.lang="pt-BR";recognition.continuous=false;recognition.interimResults=false;
-    rec=true;micButton.classList.add("listening");micButton.textContent="🔴";statusText.textContent="Microfone ativo. Pode falar.";hudCore.textContent="CAPTANDO VOZ";
-    recognition.onresult=function(e){const r=e.results&&e.results[0]&&e.results[0][0]?e.results[0][0].transcript:"";if(!r.trim()){statusText.textContent="Não reconheci.";return}input.value=r.trim();input.focus();if(typeof form.requestSubmit==="function"){form.requestSubmit()}else{form.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))}};
-    recognition.onerror=function(ev){let m="Não consegui ouvir.";if(ev.error==="not-allowed"){m="Microfone bloqueado. Libere a permissão."}statusText.textContent=m};
-    recognition.onend=function(){rec=false;micButton.classList.remove("listening");micButton.textContent="🎙️";if(!isSending){hudCore.textContent="ENERGIA ESTÁVEL";statusText.textContent="Pronto."}};
-    try{recognition.start()}catch(e){rec=false;micButton.classList.remove("listening");micButton.textContent="🎙️"}
-  });
-})();
-async function verificarServidor(){try{const r=await fetch("/api/health",{method:"GET",cache:"no-store"});if(r.ok){connection.textContent="● SISTEMA ONLINE";connection.style.color="var(--green)"}}catch{}}
-verificarServidor();
+  <div class="sidebar">
+    <div class="logo">JARVIS <span>COMMAND CENTER</span></div>
+    <div class="menu">
+      <a class="active">◈ Command Center</a>
+      <a>◉ AI Core</a>
+      <a>◎ Agents</a>
+      <a>☰ Tasks</a>
+      <a>◫ Calendar</a>
+      <a>◍ Memory</a>
+      <a>◑ Conversations</a>
+      <a>◐ Knowledge Base</a>
+      <a>◩ Tools & Skills</a>
+      <a>⚙ Workflows</a>
+    </div>
+    <div class="card"><h3>VOICE STATUS</h3><div style="height:50px;background:repeating-linear-gradient(90deg, var(--cyan) 0 2px, transparent 2px 6px);opacity:.5;border-radius:6px"></div><div id="status" style="margin-top:8px;font:11px Consolas,monospace;color:var(--muted)">Listening... Aguardando comando</div></div>
+  </div>
+
+  <div class="center">
+    <div class="card hero">
+      <div class="ring"></div><div class="ring ring2"></div>
+      <div class="core" id="orb">JARBISS</div>
+      <div style="position:absolute;bottom:12px;font:10px Consolas,monospace;color:var(--cyan);letter-spacing:3px">AI CORE v2.0 • ONLINE</div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card"><h3>AI CORE OVERVIEW</h3><div class="pill"><b>◉</b> AI Core - Active</div><div class="pill"><b>◉</b> Memory - 1,200 entries</div><div class="pill"><b>◉</b> Voice - Online</div><div class="pill"><b>◉</b> Agents - 5 Running</div></div>
+      <div class="card"><h3>ACTIVE AGENTS</h3><div class="pill">Coding Agent • In progress</div><div class="pill">Research Agent • Active</div><div class="pill">Memory Agent • Idle</div><div class="pill">Browser Agent • Standby</div></div>
+      <div class="card"><h3>SYSTEM MONITOR</h3><div style="display:flex;gap:12px"><div style="flex:1;text-align:center"><div style="width:60px;height:60px;border-radius:50%;border:3px solid var(--cyan);display:grid;place-items:center;margin:auto">68%</div><div style="font-size:10px;margin-top:6px">CPU</div></div><div style="flex:1;text-align:center"><div style="width:60px;height:60px;border-radius:50%;border:3px solid var(--cyan);display:grid;place-items:center;margin:auto">84%</div><div style="font-size:10px;margin-top:6px">RAM</div></div></div></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card"><h3>MEMORY INSIGHTS</h3><div style="font-size:12px;color:var(--muted)">3,980 memories<br>24 today</div><div id="chat"></div></div>
+      <div class="card"><h3>MISSION TIMELINE</h3><div class="feed"><div>Design review - 2:00 PM</div><div>Deploy JARBISS update</div><div>Sync GitHub</div></div></div>
+      <div class="card"><h3>QUICK COMMANDS</h3><div class="pill">Start New Task</div><div class="pill">Open Calendar</div><div class="pill">Start Voice Chat</div><div class="pill">Run Workflow</div></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card"><h3>LIVE INTELLIGENCE FEED</h3><div class="feed" id="intel"><div>System initialized. All HUDs online.</div><div>JARBISS AI Core connected.</div><div>GitHub sync active.</div></div></div>
+    <div class="card"><h3>CONVERSATIONS</h3><div style="font-size:12px;color:var(--muted)">Histórico salvo localmente. Clique em ◷ no antigo para ver.</div></div>
+  </div>
+
+  <div class="composer">
+    <input id="message" placeholder="TALK TO JARBISS • Digite seu comando..."/>
+    <button id="send">ENVIAR</button>
+    <button id="voice" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan)">🔊 VOZ</button>
+    <button id="mic" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan)">🎙️</button>
+  </div>
+</div>
+
+<script>
+const input=document.getElementById('message'), send=document.getElementById('send'), chat=document.getElementById('chat'), statusEl=document.getElementById('status'), clock=document.getElementById('clock'), orb=document.getElementById('orb');
+function updateClock(){const d=new Date();clock.textContent=d.toLocaleString('en-US',{weekday:'long', hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true})}setInterval(updateClock,1000);updateClock();
+function addMsg(t,who){const d=document.createElement('div');d.className='msg '+who;d.innerHTML=(who==='bot'?'<b>JARBISS:</b> ':'<b>VOCÊ:</b> ')+t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+let voiceOn=false;
+function speak(txt){if(!voiceOn)return;const u=new SpeechSynthesisUtterance(txt.replace(/\*\*/g,''));u.lang='pt-BR';speechSynthesis.cancel();speechSynthesis.speak(u)}
+document.getElementById('voice').onclick=()=>{voiceOn=!voiceOn;document.getElementById('voice').textContent=voiceOn?'🔊 ON':'🔊 VOZ';speak('Jarbiss online, parceiro')};
+async function sendMsg(){const msg=input.value.trim();if(!msg)return;addMsg(msg,'user');input.value='';statusEl.textContent='Processando...';orb.style.boxShadow='0 0 60px var(--cyan)';try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg, conversationId:'main'})});const data=await r.json();const reply=data.reply||data.response||data.message||'Sem resposta';addMsg(reply,'bot');statusEl.textContent='Pronto';speak(reply)}catch(e){addMsg('Erro no servidor. Verifique o backend.','bot');statusEl.textContent='Erro'}}send.onclick=sendMsg;input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
+(function mic(){const btn=document.getElementById('mic');btn.onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Use Chrome');return}const rec=new SR();rec.lang='pt-BR';rec.onresult=e=>{input.value=e.results[0][0].transcript;sendMsg()};rec.start()}})();
 </script>
 </body>
 </html>
