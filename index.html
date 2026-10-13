@@ -4,17 +4,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
-  <title>JARBISS — IA Pessoal</title>
+  <meta name="theme-color" content="#04070c">
+  <title>JARBISS — Central de Comando</title>
 
   <style>
     :root {
-      --bg: #050b14;
-      --panel: #0b1625;
-      --border: #18334a;
-      --cyan: #42e5ff;
-      --text: #e9f7ff;
-      --muted: #8ba5ba;
+      --bg: #04070c;
+      --panel: rgba(6, 17, 29, .94);
+      --cyan: #49e7ff;
+      --cyan-soft: rgba(73, 231, 255, .15);
+      --gold: #d8ad58;
+      --text: #e9f8ff;
+      --muted: #7895aa;
+      --green: #6effc2;
+      --red: #ff6464;
+      --border: rgba(73, 231, 255, .28);
     }
 
     * { box-sizing: border-box; }
@@ -22,20 +26,82 @@
     body {
       margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
       background:
-        radial-gradient(ellipse at top, #102b43 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 15%, #10364b 0%, transparent 42%),
+        radial-gradient(ellipse at 50% 60%, #071522 0%, transparent 65%),
         var(--bg);
       color: var(--text);
       font-family: Arial, sans-serif;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .25;
+      background-image:
+        linear-gradient(rgba(73,231,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(73,231,255,.08) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, #000, transparent 92%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      opacity: .08;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        rgba(73,231,255,.22) 4px
+      );
+    }
+
     button, input { font: inherit; }
 
+    button {
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 12px 15px;
+      font-weight: bold;
+      color: var(--text);
+      background: linear-gradient(145deg, #10283a, #07131f);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    button:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 17px rgba(73,231,255,.12);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+      transform: none;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
     .app {
-      max-width: 1000px;
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
       min-height: 100vh;
       margin: auto;
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
     }
@@ -44,86 +110,252 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 14px;
       padding: 10px 0 20px;
       border-bottom: 1px solid var(--border);
+      box-shadow: 0 12px 25px -25px var(--cyan);
     }
 
     .brand {
       margin: 0;
-      color: var(--cyan);
-      letter-spacing: 5px;
-      font-size: 27px;
+      color: #c5f9ff;
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: 7px;
+      text-shadow: 0 0 18px rgba(73,231,255,.48);
     }
 
     .subtitle {
-      color: var(--muted);
       margin: 7px 0 0;
-      font-size: 12px;
-      letter-spacing: 1px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 3px;
     }
 
     .badge {
-      color: #83f5bd;
-      border: 1px solid #20543f;
-      background: #0c241d;
-      border-radius: 30px;
-      padding: 8px 12px;
-      font-size: 12px;
+      color: var(--green);
+      border: 1px solid rgba(110,255,194,.35);
+      background: rgba(6,39,29,.7);
+      border-radius: 3px;
+      padding: 9px 12px;
+      font: 10px Consolas, monospace;
+      letter-spacing: 1px;
       white-space: nowrap;
+      box-shadow: 0 0 16px rgba(110,255,194,.06);
     }
 
-    .hero { text-align: center; padding: 22px 0 12px; }
+    .hud-readouts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .hud-readout {
+      min-width: 0;
+      padding: 10px 13px;
+      border-left: 2px solid var(--gold);
+      border-bottom: 1px solid rgba(73,231,255,.12);
+      background: linear-gradient(90deg, rgba(216,173,88,.07), transparent);
+      color: var(--muted);
+      font: 10px/1.6 Consolas, monospace;
+      letter-spacing: 1px;
+    }
+
+    .hud-readout strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      text-align: center;
+      padding: 28px 0 25px;
+    }
+
+    .system-label {
+      margin: 0 0 24px;
+      color: rgba(73,231,255,.7);
+      font: 10px Consolas, monospace;
+      letter-spacing: 3px;
+    }
+
+    .reactor-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: auto;
+      display: grid;
+      place-items: center;
+    }
+
+    .reactor-ring {
+      position: absolute;
+      border: 1px solid rgba(73,231,255,.48);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ring-one {
+      inset: 8px;
+      border-top-color: var(--gold);
+      border-bottom-color: transparent;
+      animation: spin 12s linear infinite;
+    }
+
+    .ring-two {
+      inset: 20px;
+      border-right: 2px solid var(--cyan);
+      border-left-color: transparent;
+      border-bottom-color: rgba(216,173,88,.7);
+      animation: spinReverse 9s linear infinite;
+    }
+
+    .ring-three {
+      inset: 32px;
+      border-style: dashed;
+      border-color: rgba(73,231,255,.3);
+      animation: spin 22s linear infinite;
+    }
+
+    .reactor-ticks {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(73,231,255,.8) 0deg 1deg,
+        transparent 1deg 15deg
+      );
+      mask: radial-gradient(circle, transparent 67%, #000 68% 69%, transparent 70%);
+      animation: spinReverse 35s linear infinite;
+      opacity: .65;
+    }
 
     .orb {
-      width: 116px;
-      height: 116px;
-      margin: 0 auto 15px;
+      position: relative;
+      width: 112px;
+      height: 112px;
       border-radius: 50%;
+      border: 2px solid rgba(164,247,255,.85);
       background: radial-gradient(
-        circle at 40% 35%,
-        #ffffff 0%, #a7f7ff 9%, #39d9ff 23%,
-        #126aab 48%, #07111f 73%
+        circle at 40% 34%,
+        #fff 0%,
+        #c9fbff 7%,
+        #54efff 18%,
+        #1495c7 34%,
+        #075078 49%,
+        #041522 70%
       );
-      box-shadow: 0 0 25px #23caff77, 0 0 65px #168ad944,
-        inset 0 0 20px #ffffff66;
-      animation: pulse 3s ease-in-out infinite;
+      box-shadow:
+        0 0 13px var(--cyan),
+        0 0 32px rgba(73,231,255,.65),
+        0 0 65px rgba(0,166,255,.28),
+        inset 0 0 22px rgba(255,255,255,.45);
+      animation: corePulse 3s ease-in-out infinite;
+    }
+
+    .orb::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      box-shadow: inset 0 0 15px rgba(255,255,255,.2);
+    }
+
+    .orb::after {
+      content: "";
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      left: 22px;
+      top: 20px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 18px white, 0 0 36px var(--cyan);
     }
 
     .orb.speaking {
-      box-shadow: 0 0 40px #42e5ff, 0 0 90px #168ad977;
+      filter: brightness(1.4);
+      box-shadow:
+        0 0 24px var(--cyan),
+        0 0 65px rgba(73,231,255,.9),
+        0 0 110px rgba(0,166,255,.45);
     }
 
-    @keyframes pulse {
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverse {
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes corePulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.04); }
+      50% { transform: scale(1.045); }
     }
 
-    .hero h2 { font-size: 19px; margin: 0 0 7px; }
+    .hero h2 {
+      margin: 12px 0 8px;
+      font-size: 17px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
 
     #status {
-      color: var(--muted);
-      font-size: 13px;
       min-height: 18px;
+      color: var(--muted);
+      font: 11px Consolas, monospace;
     }
 
     .chat-panel {
+      position: relative;
       flex: 1;
-      min-height: 300px;
+      min-height: 320px;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--border);
-      background: #081421ef;
-      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 12px 50px #0005;
+      border: 1px solid rgba(73,231,255,.38);
+      border-radius: 5px;
+      background: linear-gradient(145deg, rgba(7,20,33,.98), rgba(3,9,16,.98));
+      box-shadow: 0 0 30px rgba(0,190,255,.07), 0 22px 65px #0008;
+    }
+
+    .chat-panel::before,
+    .chat-panel::after {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+    }
+
+    .chat-panel::before {
+      top: 0;
+      left: 0;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+    }
+
+    .chat-panel::after {
+      right: 0;
+      bottom: 0;
+      border-right: 2px solid var(--cyan);
+      border-bottom: 2px solid var(--cyan);
     }
 
     .chat-heading {
-      padding: 14px 17px;
+      padding: 15px 17px;
       border-bottom: 1px solid var(--border);
+      background: rgba(15,49,67,.3);
       color: var(--cyan);
-      font-size: 12px;
+      font: 11px Consolas, monospace;
       letter-spacing: 2px;
     }
 
@@ -135,36 +367,38 @@
       overflow-y: auto;
       padding: 16px;
       scroll-behavior: smooth;
+      scrollbar-color: #20516a #07111b;
+      scrollbar-width: thin;
     }
 
     .msg {
       max-width: 88%;
-      padding: 12px 15px;
       margin: 10px 0;
-      border-radius: 14px;
-      line-height: 1.6;
+      padding: 12px 15px;
+      border-radius: 4px;
+      line-height: 1.65;
       overflow-wrap: anywhere;
       font-size: 14px;
     }
 
     .bot {
-      background: #102638;
-      border: 1px solid #1b4055;
       margin-right: auto;
+      border: 1px solid rgba(73,231,255,.23);
+      background: rgba(13,37,54,.9);
     }
 
     .user {
-      background: #123e56;
-      border: 1px solid #20617c;
       margin-left: auto;
+      border: 1px solid rgba(73,231,255,.43);
+      background: rgba(12,53,73,.92);
     }
 
     .msg-label {
       display: block;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: var(--cyan);
       margin-bottom: 7px;
+      color: var(--cyan);
+      font: 10px Consolas, monospace;
+      letter-spacing: 1.5px;
     }
 
     .msg-content p {
@@ -186,7 +420,7 @@
     .msg-content h1 { font-size: 20px; }
     .msg-content h2 { font-size: 18px; }
     .msg-content h3 { font-size: 16px; }
-    .msg-content strong { color: #ffffff; }
+    .msg-content strong { color: #fff; }
     .msg-content em { color: #bdefff; }
 
     .msg-content ul,
@@ -196,6 +430,11 @@
     }
 
     .msg-content li { margin: 5px 0; }
+
+    .msg-content code {
+      color: var(--gold);
+      overflow-wrap: anywhere;
+    }
 
     .msg-content table {
       display: block;
@@ -222,12 +461,8 @@
       color: var(--cyan);
     }
 
-    .msg-content tr:nth-child(even) td { background: #0b1c2b; }
-
-    .msg-content br {
-      display: block;
-      content: "";
-      margin-top: 5px;
+    .msg-content tr:nth-child(even) td {
+      background: #0b1c2b;
     }
 
     .composer {
@@ -235,7 +470,7 @@
       gap: 9px;
       padding: 13px;
       border-top: 1px solid var(--border);
-      background: #07111d;
+      background: rgba(3,10,17,.97);
     }
 
     #message {
@@ -244,49 +479,45 @@
       min-width: 0;
       padding: 14px;
       color: white;
-      background: #0b1b2a;
-      border: 1px solid #24445a;
-      border-radius: 11px;
+      background: rgba(4,17,28,.96);
+      border: 1px solid rgba(73,231,255,.3);
+      border-radius: 4px;
       outline: none;
     }
 
+    #message::placeholder { color: #688397; }
+
     #message:focus {
       border-color: var(--cyan);
-      box-shadow: 0 0 0 2px #42e5ff18;
+      box-shadow: 0 0 0 2px rgba(73,231,255,.08);
     }
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 15px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: opacity .2s, transform .2s;
+    #send {
+      min-width: 95px;
+      color: #03111a;
+      background: linear-gradient(135deg, #baf8ff, #39c8ed);
+      border-color: var(--cyan);
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 16px rgba(73,231,255,.13);
     }
-
-    button:hover { transform: translateY(-1px); }
-
-    button:disabled { opacity: .5; cursor: wait; }
-
-    #send { color: #03111a; background: var(--cyan); }
 
     .actions {
       display: flex;
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 13px;
     }
 
     .actions button {
       flex: 1;
-      color: var(--text);
-      background: #102438;
-      border: 1px solid var(--border);
       font-size: 12px;
     }
 
     .actions button.active {
-      border-color: var(--cyan);
       color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(73,231,255,.12);
     }
 
     .tools {
@@ -298,36 +529,77 @@
 
     .tools button {
       flex: 1 1 140px;
-      color: var(--text);
-      background: #0b1b2a;
-      border: 1px solid var(--border);
       font-size: 12px;
     }
 
     footer {
+      padding: 21px 0 5px;
+      color: #5f7e91;
       text-align: center;
-      color: #607c91;
-      font-size: 11px;
-      padding: 20px 0 5px;
+      font: 10px Consolas, monospace;
+      letter-spacing: 2px;
+    }
+
+    #jarbiss-mic-btn {
+      position: fixed;
+      right: 23px;
+      bottom: 23px;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      padding: 0;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      color: #ffe4a3;
+      background: linear-gradient(145deg, #24251f, #080d13);
+      font-size: 25px;
+      box-shadow: 0 0 18px rgba(216,173,88,.22),
+                  inset 0 0 12px rgba(216,173,88,.1);
+    }
+
+    #jarbiss-mic-btn:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(73,231,255,.35);
+    }
+
+    #jarbiss-mic-btn.listening {
+      color: white;
+      border-color: var(--red);
+      box-shadow: 0 0 25px rgba(255,100,100,.5);
+      animation: corePulse 1s ease-in-out infinite;
     }
 
     @media (max-width: 560px) {
       .app { padding: 13px; }
       .brand { font-size: 22px; letter-spacing: 4px; }
-      .badge { font-size: 10px; padding: 7px 9px; }
+      .subtitle { font-size: 8px; letter-spacing: 1.5px; }
+      .badge { font-size: 9px; padding: 8px; letter-spacing: 0; }
+      .hud-readouts { gap: 5px; }
+      .hud-readout { padding: 8px 5px; font-size: 8px; letter-spacing: .3px; }
+      .hud-readout strong { font-size: 9px; }
+      .system-label { font-size: 8px; letter-spacing: 1.5px; }
+      .reactor-wrap { width: 185px; height: 185px; }
       .orb { width: 95px; height: 95px; }
+      .hero h2 { font-size: 14px; letter-spacing: 2px; }
       #chat { height: 36vh; padding: 11px; }
-      .msg { max-width: 94%; }
+      .msg { max-width: 95%; padding: 10px 12px; }
       .composer { padding: 9px; gap: 7px; }
-      #message { padding: 12px 10px; }
-      #send { padding: 10px 12px; }
-      .actions button { padding: 11px 6px; }
+      #message { padding: 12px 10px; font-size: 14px; }
+      #send { min-width: 72px; padding: 10px; font-size: 11px; }
+      .actions { gap: 7px; }
+      .actions button { padding: 11px 6px; font-size: 10px; }
+      .tools { gap: 7px; }
+      .tools button { padding: 11px 7px; }
+      #jarbiss-mic-btn { width: 52px; height: 52px; right: 15px; bottom: 15px; }
       .msg-content th, .msg-content td { padding: 7px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
       }
     }
@@ -339,28 +611,54 @@
     <header>
       <div>
         <h1 class="brand">JARBISS</h1>
-        <p class="subtitle">INTELIGÊNCIA PESSOAL</p>
+        <p class="subtitle">STARK-STYLE PERSONAL AI // VERSION 2.0</p>
       </div>
       <div class="badge" id="connection">● INTERFACE ONLINE</div>
     </header>
 
+    <section class="hud-readouts" aria-label="Leituras do sistema">
+      <div class="hud-readout">
+        INTERFACE
+        <strong id="hud-interface">HUD / ATIVO</strong>
+      </div>
+      <div class="hud-readout">
+        NÚCLEO DE ENERGIA
+        <strong id="hud-core">ENERGIA ESTÁVEL</strong>
+      </div>
+      <div class="hud-readout">
+        INTELIGÊNCIA
+        <strong id="hud-ai">JARBISS AI</strong>
+      </div>
+    </section>
+
     <section class="hero">
-      <div class="orb" id="orb" aria-hidden="true"></div>
+      <p class="system-label">◈ ARC CORE // SYSTEM POWERED ◈</p>
+
+      <div class="reactor-wrap" aria-label="Núcleo de energia animado">
+        <div class="reactor-ring ring-one"></div>
+        <div class="reactor-ring ring-two"></div>
+        <div class="reactor-ring ring-three"></div>
+        <div class="reactor-ticks"></div>
+        <div class="orb" id="orb" aria-hidden="true"></div>
+      </div>
+
       <h2>À sua disposição.</h2>
-      <div id="status" role="status">
+      <div id="status" role="status" aria-live="polite">
         Sistema inicializado. Aguardando comando.
       </div>
     </section>
 
     <section class="chat-panel" aria-label="Conversa com JARBISS">
-      <div class="chat-heading">CENTRAL DE COMUNICAÇÃO</div>
+      <div class="chat-heading">
+        HOLOGRAPHIC COMMUNICATION // CHANNEL 01
+      </div>
 
       <div id="chat" aria-live="polite">
         <div class="msg bot">
-          <span class="msg-label">JARBISS</span>
+          <span class="msg-label">JARBISS // ONLINE</span>
           <div class="msg-content">
-            Olá, parceiro! Sou o JARBISS, sua IA pessoal.
-            Estou pronto para ajudar. O que vamos fazer hoje?
+            <p>Olá, parceiro! Sou o JARBISS, sua IA pessoal.</p>
+            <p>Todos os sistemas visuais estão prontos. O que vamos fazer hoje?</p>
           </div>
         </div>
       </div>
@@ -384,16 +682,18 @@
     </div>
 
     <div class="tools" aria-label="Ferramentas pessoais">
-      <button type="button" id="notes">📝 Bloco de notas</button>
-      <button type="button" id="history">💬 Histórico</button>
+      <button type="button" id="notes">▤ Bloco de notas</button>
+      <button type="button" id="history">◷ Histórico</button>
     </div>
 
     <footer>
-      JARBISS • ASSISTENTE PESSOAL • SISTEMA WEB
+      JARBISS SYSTEMS • HOLOGRAPHIC COMMAND INTERFACE
     </footer>
   </div>
 
   <script>
+    "use strict";
+
     const form = document.getElementById("form");
     const input = document.getElementById("message");
     const sendButton = document.getElementById("send");
@@ -405,47 +705,55 @@
     const orb = document.getElementById("orb");
     const notesButton = document.getElementById("notes");
     const historyButton = document.getElementById("history");
+    const hudCore = document.getElementById("hud-core");
 
     let voiceEnabled = false;
+    let isSending = false;
 
     const HISTORY_KEY = "jarbiss_history_v1";
     const NOTES_KEY = "jarbiss_notes_v1";
     const CONVERSATION_ID_KEY = "jarbiss_conversation_id";
 
-    // Mantém um identificador para a conversa atual.
-    function getConversationId() {
-      let id = localStorage.getItem(CONVERSATION_ID_KEY);
-
-      if (!id) {
-        id = "conv_" + (
-          window.crypto &&
-          typeof window.crypto.randomUUID === "function"
-            ? window.crypto.randomUUID()
-            : Date.now() + "_" + Math.random().toString(36).slice(2)
-        );
-
-        localStorage.setItem(CONVERSATION_ID_KEY, id);
-      }
-
-      return id;
-    }
-
-    // Cria um identificador novo sem apagar o histórico salvo.
-    function newConversationId() {
-      const id = "conv_" + (
+    function createId() {
+      return "conv_" + (
         window.crypto &&
         typeof window.crypto.randomUUID === "function"
           ? window.crypto.randomUUID()
           : Date.now() + "_" + Math.random().toString(36).slice(2)
       );
+    }
 
-      localStorage.setItem(CONVERSATION_ID_KEY, id);
+    function getConversationId() {
+      try {
+        let id = localStorage.getItem(CONVERSATION_ID_KEY);
+
+        if (!id) {
+          id = createId();
+          localStorage.setItem(CONVERSATION_ID_KEY, id);
+        }
+
+        return id;
+      } catch {
+        return createId();
+      }
+    }
+
+    function newConversationId() {
+      const id = createId();
+
+      try {
+        localStorage.setItem(CONVERSATION_ID_KEY, id);
+      } catch (error) {
+        console.warn("Não foi possível salvar o ID da conversa.", error);
+      }
+
       return id;
     }
 
     function loadHistory() {
       try {
-        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+        const data = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+        return Array.isArray(data) ? data : [];
       } catch {
         return [];
       }
@@ -457,7 +765,8 @@
       history.push({
         text: String(text),
         sender,
-        time: new Date().toLocaleString("pt-BR")
+        time: new Date().toLocaleString("pt-BR"),
+        conversationId: getConversationId()
       });
 
       try {
@@ -539,9 +848,7 @@
             tabela += "<tr>";
 
             for (let j = 0; j < cabecalhos.length; j++) {
-              tabela += "<td>" +
-                formatarTexto(valores[j] || "") +
-                "</td>";
+              tabela += "<td>" + formatarTexto(valores[j] || "") + "</td>";
             }
 
             tabela += "</tr>";
@@ -590,9 +897,7 @@
             listaAtual = "ol";
           }
 
-          resultado.push(
-            "<li>" + formatarTexto(itemNumerado[1]) + "</li>"
-          );
+          resultado.push("<li>" + formatarTexto(itemNumerado[1]) + "</li>");
           continue;
         }
 
@@ -633,67 +938,68 @@
       return bubble;
     }
 
-    
-```javascript
-function speak(text) {
-  if (!voiceEnabled || !("speechSynthesis" in window)) return;
+    function speak(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
 
-  const synth = window.speechSynthesis;
-  synth.cancel();
+      const synth = window.speechSynthesis;
+      synth.cancel();
 
-  const textoFalado = String(text)
-    .replace(/^#{1,6}\s+/gm, "")
-    .replace(/\*\*(.*?)\*\*/g, "$1")
-    .replace(/\*(.*?)\*/g, "$1")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/^\s*[-*+]\s+/gm, "")
-    .replace(/^\s*\d+[.)]\s+/gm, "")
-    .replace(/\|/g, " ")
-    .replace(/[\u{1F300}-\u{1FAFF}]/gu, "")
-    .replace(/\n{2,}/g, ". ")
-    .trim();
+      const textoFalado = String(text)
+        .replace(/^#{1,6}\s+/gm, "")
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/`([^`]+)`/g, "$1")
+        .replace(/^\s*[-*+]\s+/gm, "")
+        .replace(/^\s*\d+[.)]\s+/gm, "")
+        .replace(/\|/g, " ")
+        .replace(/[\u{1F300}-\u{1FAFF}]/gu, "")
+        .replace(/\n{2,}/g, ". ")
+        .trim();
 
-  if (!textoFalado) return;
+      if (!textoFalado) return;
 
-  const utterance = new SpeechSynthesisUtterance(textoFalado);
-  utterance.lang = "pt-BR";
-  utterance.rate = 0.92;
-  utterance.pitch = 0.95;
-  utterance.volume = 1;
+      const utterance = new SpeechSynthesisUtterance(textoFalado);
+      utterance.lang = "pt-BR";
+      utterance.rate = 0.94;
+      utterance.pitch = 0.92;
+      utterance.volume = 1;
 
-  utterance.onstart = () => orb.classList.add("speaking");
-  utterance.onend = () => orb.classList.remove("speaking");
-  utterance.onerror = () => orb.classList.remove("speaking");
+      utterance.onstart = () => {
+        orb.classList.add("speaking");
+        hudCore.textContent = "SAÍDA DE ÁUDIO";
+      };
 
-  function configurarVoz() {
-    const vozes = synth.getVoices();
+      utterance.onend = () => {
+        orb.classList.remove("speaking");
+        hudCore.textContent = "ENERGIA ESTÁVEL";
+      };
 
-    const brasileiras = vozes.filter(v =>
-      /^pt-BR$/i.test(v.lang)
-    );
+      utterance.onerror = () => {
+        orb.classList.remove("speaking");
+        hudCore.textContent = "ENERGIA ESTÁVEL";
+      };
 
-    const vozEscolhida =
-      brasileiras.find(v => /natural/i.test(v.name)) ||
-      brasileiras.find(v => /google/i.test(v.name)) ||
-      brasileiras.find(v => /microsoft/i.test(v.name)) ||
-      brasileiras[0];
+      function configurarVoz() {
+        const vozes = synth.getVoices();
+        const brasileiras = vozes.filter(v => /^pt-BR$/i.test(v.lang));
 
-    if (vozEscolhida) {
-      utterance.voice = vozEscolhida;
+        const vozEscolhida =
+          brasileiras.find(v => /natural/i.test(v.name)) ||
+          brasileiras.find(v => /google/i.test(v.name)) ||
+          brasileiras.find(v => /microsoft/i.test(v.name)) ||
+          brasileiras[0];
+
+        if (vozEscolhida) utterance.voice = vozEscolhida;
+
+        synth.speak(utterance);
+      }
+
+      if (synth.getVoices().length > 0) {
+        configurarVoz();
+      } else {
+        synth.addEventListener("voiceschanged", configurarVoz, { once: true });
+      }
     }
-
-    synth.speak(utterance);
-  }
-
-  if (synth.getVoices().length > 0) {
-    configurarVoz();
-  } else {
-    synth.addEventListener("voiceschanged", configurarVoz, {
-      once: true
-    });
-  }
-}
-```
 
     function extractReply(data) {
       if (typeof data === "string") return data;
@@ -718,30 +1024,27 @@ function speak(text) {
       return "";
     }
 
-    // Envia a mensagem e o identificador para o servidor de IA.
     async function sendMessage(message) {
+      if (isSending || !message.trim()) return;
+
+      isSending = true;
       addMessage(message, "user");
 
       input.value = "";
-      input.focus();
-
       sendButton.disabled = true;
       input.disabled = true;
 
-      statusText.textContent = "Processando seu comando...";
+      statusText.textContent = "Processando comando...";
       connection.textContent = "● PROCESSANDO";
+      hudCore.textContent = "ANALISANDO";
+      orb.classList.add("speaking");
 
-      const waiting = addMessage(
-        "Um instante, estou pensando...",
-        "bot"
-      );
+      const waiting = addMessage("Analisando sua solicitação...", "bot");
 
       try {
         const response = await fetch("/api/chat", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message,
             conversationId: getConversationId()
@@ -754,52 +1057,51 @@ function speak(text) {
         try {
           data = JSON.parse(raw);
         } catch {
-          throw new Error(
-            "O servidor retornou uma resposta inválida."
-          );
+          throw new Error("O servidor retornou uma resposta inválida.");
         }
 
         if (!response.ok) {
           throw new Error(
             data.error ||
             data.message ||
-            "O servidor respondeu com erro " + response.status + "."
+            "Erro do servidor: " + response.status
           );
         }
 
         const reply = extractReply(data);
 
         if (!reply) {
-          throw new Error(
-            "O servidor respondeu, mas não encontrei o texto da resposta."
-          );
+          throw new Error("O servidor respondeu sem conteúdo de texto.");
         }
 
         waiting.remove();
         addMessage(reply, "bot");
 
-        statusText.textContent = "Comando concluído.";
+        statusText.textContent = "Comando concluído. Aguardando instruções.";
         connection.textContent = "● INTERFACE ONLINE";
-
+        hudCore.textContent = "ENERGIA ESTÁVEL";
         speak(reply);
 
       } catch (error) {
         waiting.remove();
 
         addMessage(
-          "Não consegui falar com o servidor de IA. " +
+          "Não consegui consultar a inteligência agora. " +
           error.message +
-          " Verifique a configuração do servidor no Render.",
+          " Verifique se o servidor e a integração com a Groq estão ativos.",
           "bot"
         );
 
         statusText.textContent = "Falha ao consultar a IA.";
         connection.textContent = "● VERIFICAR SERVIDOR";
+        hudCore.textContent = "CONEXÃO INDISPONÍVEL";
 
       } finally {
+        isSending = false;
         sendButton.disabled = false;
         input.disabled = false;
         input.focus();
+        orb.classList.remove("speaking");
         chat.scrollTop = chat.scrollHeight;
       }
     }
@@ -809,9 +1111,7 @@ function speak(text) {
 
       const message = input.value.trim();
 
-      if (!message || sendButton.disabled) return;
-
-      sendMessage(message);
+      if (message && !isSending) sendMessage(message);
     });
 
     voiceButton.addEventListener("click", function() {
@@ -826,58 +1126,66 @@ function speak(text) {
       if (!voiceEnabled && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
         orb.classList.remove("speaking");
+        hudCore.textContent = "ENERGIA ESTÁVEL";
       } else {
-        speak("Voz ativada. Estou ouvindo, parceiro.");
+        speak("Voz ativada. Estou à sua disposição, parceiro.");
       }
     });
 
     clearButton.addEventListener("click", function() {
       if (!confirm(
-        "Iniciar uma nova conversa? O histórico salvo continuará disponível. Esta ação limpa apenas a conversa exibida."
+        "Iniciar uma nova conversa? O histórico salvo continuará disponível."
       )) return;
 
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
 
-      // Importante: a próxima mensagem terá um ID de conversa novo.
       newConversationId();
-
       chat.replaceChildren();
 
       addMessage(
-        "Conversa reiniciada. Estou pronto para o próximo comando, parceiro!",
+        "Nova conversa iniciada. Estou pronto para o próximo comando, parceiro.",
         "bot"
       );
 
       statusText.textContent = "Aguardando novo comando.";
       connection.textContent = "● INTERFACE ONLINE";
-
+      hudCore.textContent = "ENERGIA ESTÁVEL";
       input.value = "";
       input.focus();
       orb.classList.remove("speaking");
     });
 
     notesButton.addEventListener("click", function() {
-      const atual = localStorage.getItem(NOTES_KEY) || "";
+      let atual = "";
+
+      try {
+        atual = localStorage.getItem(NOTES_KEY) || "";
+      } catch {
+        alert("O navegador bloqueou o acesso às anotações locais.");
+        return;
+      }
 
       const novo = prompt(
-        "BLOCO DE NOTAS JARBISS\n\nEscreva ou edite suas anotações. Para apagar tudo, deixe vazio e confirme.",
+        "JARBISS // BLOCO DE NOTAS\n\nEscreva ou edite suas anotações:",
         atual
       );
 
       if (novo === null) return;
 
       if (!novo.trim()) {
-        if (atual && !confirm(
-          "Tem certeza de que deseja apagar todas as anotações?"
-        )) return;
+        if (atual && !confirm("Deseja apagar todas as anotações?")) return;
 
         localStorage.removeItem(NOTES_KEY);
         alert("Anotações apagadas.");
       } else {
-        localStorage.setItem(NOTES_KEY, novo);
-        alert("Anotação salva neste navegador!");
+        try {
+          localStorage.setItem(NOTES_KEY, novo);
+          alert("Anotação salva neste navegador.");
+        } catch {
+          alert("Não foi possível salvar a anotação.");
+        }
       }
     });
 
@@ -890,32 +1198,24 @@ function speak(text) {
       }
 
       const resumo = history.slice(-30).map(item =>
-        "[" + item.time + "] " +
+        "[" + (item.time || "sem data") + "] " +
         (item.sender === "user" ? "VOCÊ" : "JARBISS") +
         ": " + item.text
       ).join("\n\n");
 
       alert(
-        "HISTÓRICO RECENTE (até 30 mensagens)\n\n" +
+        "JARBISS // HISTÓRICO RECENTE\n\n" +
         resumo +
-        "\n\nAs mensagens ficam salvas somente neste navegador."
+        "\n\nAs mensagens ficam salvas neste navegador."
       );
     });
 
     window.addEventListener("error", function() {
-      statusText.textContent = "Ocorreu um erro na interface.";
+      statusText.textContent = "Erro detectado na interface.";
     });
-  </script>
 
-  <script>
-    (function () {
-      if (document.getElementById("jarbiss-mic-btn")) return;
-
-      const input = document.getElementById("message");
-      const form = document.getElementById("form");
-
-      if (!input || !form) return;
-
+    // Microfone: reconhecimento de voz fornecido pelo navegador.
+    (function configurarMicrofone() {
       const micButton = document.createElement("button");
       micButton.id = "jarbiss-mic-btn";
       micButton.type = "button";
@@ -923,68 +1223,49 @@ function speak(text) {
       micButton.title = "Falar com o JARBISS";
       micButton.setAttribute("aria-label", "Falar com o JARBISS");
 
-      Object.assign(micButton.style, {
-        position: "fixed",
-        right: "22px",
-        bottom: "22px",
-        zIndex: "99999",
-        width: "62px",
-        height: "62px",
-        borderRadius: "50%",
-        border: "2px solid #b89b5e",
-        background: "linear-gradient(145deg, #292923, #10110f)",
-        color: "#e1c782",
-        fontSize: "27px",
-        cursor: "pointer",
-        boxShadow: "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18",
-        transition: "all .25s ease"
-      });
+      document.body.appendChild(micButton);
 
-      micButton.addEventListener("mouseenter", function () {
-        micButton.style.boxShadow =
-          "0 0 25px #b89b5e77, inset 0 0 14px #b89b5e22";
-        micButton.style.transform = "scale(1.06)";
-      });
+      let recognitionAtiva = false;
 
-      micButton.addEventListener("mouseleave", function () {
-        micButton.style.boxShadow =
-          "0 0 18px #b89b5e33, inset 0 0 12px #b89b5e18";
-        micButton.style.transform = "scale(1)";
-      });
-
-      micButton.addEventListener("click", function () {
+      micButton.addEventListener("click", function() {
         const SpeechRecognition =
           window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
           alert(
-            "Este navegador não oferece reconhecimento de voz nesta página. O botão pode aparecer, mas o reconhecimento depende do suporte do navegador."
+            "Este navegador não oferece reconhecimento de voz nesta página. " +
+            "Tente usar o Google Chrome e verifique a permissão do microfone."
           );
           return;
         }
+
+        if (recognitionAtiva) return;
 
         const recognition = new SpeechRecognition();
         recognition.lang = "pt-BR";
         recognition.continuous = false;
         recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
+        recognitionAtiva = true;
+        micButton.classList.add("listening");
         micButton.textContent = "🔴";
-        micButton.disabled = true;
+        statusText.textContent = "Microfone ativo. Pode falar.";
+        hudCore.textContent = "CAPTANDO VOZ";
 
-        recognition.onresult = function (event) {
-          const texto = event.results &&
+        recognition.onresult = function(event) {
+          const resultado = event.results &&
             event.results[0] &&
             event.results[0][0]
               ? event.results[0][0].transcript
               : "";
 
-          if (!texto.trim()) {
-            alert("Não consegui entender. Tente falar novamente.");
+          if (!resultado.trim()) {
+            statusText.textContent = "Não foi possível reconhecer a fala.";
             return;
           }
 
-          input.value = texto.trim();
-          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.value = resultado.trim();
           input.focus();
 
           if (typeof form.requestSubmit === "function") {
@@ -997,40 +1278,66 @@ function speak(text) {
           }
         };
 
-        recognition.onerror = function (event) {
-          let mensagem =
-            "Não consegui ouvir. Verifique a permissão do microfone e tente novamente.";
+        recognition.onerror = function(event) {
+          let mensagem = "Não consegui ouvir. Tente novamente.";
 
           if (
             event.error === "not-allowed" ||
             event.error === "service-not-allowed"
           ) {
-            mensagem =
-              "O acesso ao microfone foi bloqueado. Verifique as permissões do navegador.";
+            mensagem = "Acesso ao microfone bloqueado. Verifique a permissão do navegador.";
           } else if (event.error === "no-speech") {
-            mensagem =
-              "Não detectei fala. Toque no microfone e fale novamente.";
+            mensagem = "Nenhuma fala detectada. Toque no microfone e fale novamente.";
+          } else if (event.error === "network") {
+            mensagem = "O reconhecimento de voz encontrou um erro de rede.";
           }
 
-          alert(mensagem);
+          statusText.textContent = mensagem;
         };
 
-        recognition.onend = function () {
+        recognition.onend = function() {
+          recognitionAtiva = false;
+          micButton.classList.remove("listening");
           micButton.textContent = "🎙️";
-          micButton.disabled = false;
+
+          if (!isSending) {
+            hudCore.textContent = "ENERGIA ESTÁVEL";
+            statusText.textContent = "Sistema pronto. Aguardando comando.";
+          }
         };
 
         try {
           recognition.start();
         } catch (error) {
+          recognitionAtiva = false;
+          micButton.classList.remove("listening");
           micButton.textContent = "🎙️";
-          micButton.disabled = false;
-          alert("Não foi possível iniciar o microfone. Tente novamente.");
+          statusText.textContent = "Não foi possível iniciar o microfone.";
         }
       });
-
-      document.body.appendChild(micButton);
     })();
+
+    // Verifica a disponibilidade do servidor sem expor nenhuma chave.
+    async function verificarServidor() {
+      try {
+        const response = await fetch("/api/health", {
+          method: "GET",
+          cache: "no-store"
+        });
+
+        if (response.ok) {
+          connection.textContent = "● SISTEMA ONLINE";
+          connection.style.color = "var(--green)";
+        } else {
+          connection.textContent = "● IA A VERIFICAR";
+        }
+      } catch {
+        // Alguns servidores não possuem /api/health.
+        // O teste real da conexão acontece ao enviar uma mensagem.
+      }
+    }
+
+    verificarServidor();
   </script>
 </body>
 </html>
