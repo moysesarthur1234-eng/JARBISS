@@ -500,13 +500,17 @@ function escapeHTML(text) {
     .replace(/'/g, "&#39;");
 }
 
+```javascript
 function formatText(text) {
-  return escapeHTML(text)
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
+  return escapeHTML(String(text))
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>");
+    .replace(/__(.+?)__/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
+    .replace(/\n/g, "<br>");
 }
-
+```
+console.log(formatText("**1. Verifique a documentação**"));
 function addMsg(text, who, persist = true) {
   const element = document.createElement("div");
   element.className = "msg " + who;
