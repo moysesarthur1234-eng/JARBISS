@@ -499,8 +499,6 @@ function escapeHTML(text) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-
-```javascript
 function formatText(text) {
   return escapeHTML(String(text))
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
