@@ -9,315 +9,175 @@
 
 <style>
 :root {
-  --bg:#030a14;
-  --panel:#0a1a2e;
-  --panel2:#0f2742;
-  --cyan:#00e5ff;
-  --blue:#0a84ff;
-  --text:#e6f6ff;
-  --muted:#6e8ea8;
-  --green:#6effc2;
-  --red:#ff6464;
+  --bg:#030a14; --panel:#0a1a2e; --panel2:#0f2742;
+  --cyan:#00e5ff; --blue:#0a84ff; --text:#e6f6ff;
+  --muted:#6e8ea8; --green:#6effc2; --red:#ff6464;
 }
-*{box-sizing:border-box}
+* { box-sizing:border-box; }
 body {
-  margin:0;
-  min-height:100vh;
+  margin:0; min-height:100vh;
   background:radial-gradient(1200px 600px at 50% 0%,#0e2a4a 0%,#030a14 60%);
-  color:var(--text);
-  font-family:Inter,Arial,sans-serif;
+  color:var(--text); font-family:Inter,Arial,sans-serif;
 }
-button,input{font:inherit}
-button{cursor:pointer;transition:.2s}
-button:hover{filter:brightness(1.15)}
-button:disabled{opacity:.5;cursor:wait}
+button,input { font:inherit; }
+button { cursor:pointer; transition:.2s; }
+button:hover { filter:brightness(1.15); }
+button:disabled { opacity:.5; cursor:wait; }
 .app {
-  display:grid;
-  grid-template-columns:240px minmax(0,1fr) 280px;
+  display:grid; grid-template-columns:240px minmax(0,1fr) 280px;
   grid-template-rows:56px minmax(0,1fr) auto;
-  height:100vh;
-  min-height:600px;
-  gap:12px;
-  padding:12px;
+  min-height:100vh; height:100vh; gap:12px; padding:12px;
 }
 .topbar {
-  grid-column:1/-1;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:0 18px;
+  grid-column:1/-1; display:flex; align-items:center;
+  justify-content:space-between; gap:12px; padding:0 18px;
   background:linear-gradient(90deg,rgba(0,229,255,.08),transparent);
-  border:1px solid #00e5ff33;
-  border-radius:12px;
+  border:1px solid #00e5ff33; border-radius:12px;
 }
 .badge {
-  font:10px Consolas,monospace;
-  color:var(--cyan);
-  border:1px solid #00e5ff55;
-  padding:7px 10px;
-  border-radius:20px;
-  background:#00e5ff0d;
+  font:10px Consolas,monospace; color:var(--cyan);
+  border:1px solid #00e5ff55; padding:7px 10px;
+  border-radius:20px; background:#00e5ff0d;
 }
-.time {
-  color:var(--cyan);
-  font:bold 16px Consolas,monospace;
-}
+.time { color:var(--cyan); font:bold 16px Consolas,monospace; }
 .sidebar,.right {
-  min-height:0;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+  min-height:0; overflow:auto; display:flex;
+  flex-direction:column; gap:12px;
 }
 .sidebar {
-  grid-row:2/4;
-  padding:14px;
+  grid-row:2/4; padding:14px;
   background:linear-gradient(180deg,#0a1f38,#081526);
-  border:1px solid #00e5ff2e;
-  border-radius:14px;
+  border:1px solid #00e5ff2e; border-radius:14px;
 }
 .logo {
-  font-weight:900;
-  letter-spacing:4px;
-  color:#c9f5ff;
-  font-size:20px;
-  text-shadow:0 0 10px var(--cyan);
-  margin:5px 0 20px;
+  font-weight:900; letter-spacing:4px; color:#c9f5ff;
+  font-size:20px; text-shadow:0 0 10px var(--cyan); margin:5px 0 20px;
 }
 .logo span {
-  display:block;
-  font-size:9px;
-  letter-spacing:3px;
-  color:var(--muted);
-  margin-top:6px;
+  display:block; font-size:9px; letter-spacing:3px;
+  color:var(--muted); margin-top:6px;
 }
-.menu{display:flex;flex-direction:column;gap:5px}
+.menu { display:flex; flex-direction:column; gap:5px; }
 .menu button {
-  text-align:left;
-  padding:11px;
-  border:1px solid transparent;
-  border-radius:8px;
-  background:transparent;
-  color:#9ec2d8;
-  font-size:12px;
+  text-align:left; padding:11px; border:1px solid transparent;
+  border-radius:8px; background:transparent; color:#9ec2d8; font-size:12px;
 }
 .menu button.active,.menu button:hover {
-  background:#00e5ff1c;
-  border-color:#00e5ff55;
-  color:white;
+  background:#00e5ff1c; border-color:#00e5ff55; color:white;
 }
 .card {
-  min-width:0;
-  padding:13px;
+  min-width:0; padding:13px;
   background:linear-gradient(180deg,#0f2742e8,#0a1a2ee8);
-  border:1px solid #00e5ff30;
-  border-radius:12px;
-  box-shadow:0 0 20px #0004;
+  border:1px solid #00e5ff30; border-radius:12px; box-shadow:0 0 20px #0004;
 }
 .card h3 {
-  margin:0 0 12px;
-  font:11px Consolas,monospace;
-  letter-spacing:1.4px;
-  color:var(--cyan);
+  margin:0 0 12px; font:11px Consolas,monospace;
+  letter-spacing:1.4px; color:var(--cyan);
 }
 .center {
-  display:grid;
-  grid-template-rows:minmax(230px,1.1fr) auto minmax(180px,.8fr);
-  gap:12px;
-  min-height:0;
-  overflow:auto;
+  display:grid; grid-template-rows:minmax(230px,1.1fr) auto minmax(180px,.8fr);
+  gap:12px; min-height:0; overflow:auto;
 }
-.hero {
-  position:relative;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  min-height:230px;
-}
+.hero { position:relative; display:grid; place-items:center; overflow:hidden; min-height:230px; }
 .ring {
-  position:absolute;
-  width:230px;
-  height:230px;
-  border:1px dashed #00e5ff66;
-  border-radius:50%;
-  animation:spin 20s linear infinite;
-  pointer-events:none;
+  position:absolute; width:230px; height:230px;
+  border:1px dashed #00e5ff66; border-radius:50%;
+  animation:spin 20s linear infinite; pointer-events:none;
 }
 .ring.ring2 {
-  width:280px;
-  height:280px;
-  border-style:solid;
-  border-color:#00e5ff22;
-  border-top-color:var(--cyan);
+  width:280px; height:280px; border-style:solid;
+  border-color:#00e5ff22; border-top-color:var(--cyan);
   animation:spinReverse 13s linear infinite;
 }
 .core {
-  width:125px;
-  height:125px;
-  border-radius:50%;
+  width:125px; height:125px; border-radius:50%;
   background:radial-gradient(circle at 40% 30%,#fff,#7af0ff 15%,#00b8ff 35%,#051423 72%);
   box-shadow:0 0 30px var(--cyan),0 0 80px #00e5ff66;
-  display:grid;
-  place-items:center;
-  color:white;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:2px;
-  text-shadow:0 0 10px var(--cyan);
-  z-index:1;
-  transition:box-shadow .3s;
+  display:grid; place-items:center; color:white; font-size:13px;
+  font-weight:900; letter-spacing:2px; text-shadow:0 0 10px var(--cyan);
+  z-index:1; transition:box-shadow .3s;
 }
-.core.active {
-  box-shadow:0 0 45px var(--cyan),0 0 100px #00e5ff99;
-}
+.core.active { box-shadow:0 0 45px var(--cyan),0 0 100px #00e5ff99; }
 .hero-label {
-  position:absolute;
-  bottom:12px;
-  color:var(--cyan);
-  font:10px Consolas,monospace;
-  letter-spacing:2px;
+  position:absolute; bottom:12px; color:var(--cyan);
+  font:10px Consolas,monospace; letter-spacing:2px;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes spinReverse{to{transform:rotate(-360deg)}}
-.grid-3 {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-}
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes spinReverse { to { transform:rotate(-360deg); } }
+.grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .pill {
-  padding:9px;
-  margin-bottom:7px;
-  background:#00e5ff0c;
-  border:1px solid #00e5ff25;
-  border-radius:8px;
-  font-size:11px;
-  overflow-wrap:anywhere;
+  padding:9px; margin-bottom:7px; background:#00e5ff0c;
+  border:1px solid #00e5ff25; border-radius:8px;
+  font-size:11px; overflow-wrap:anywhere;
 }
-.pill b{color:var(--cyan)}
-.small-text{font-size:11px;color:var(--muted);line-height:1.7}
-.feed {
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  overflow:auto;
-  max-height:260px;
-}
+.pill b { color:var(--cyan); }
+.small-text { font-size:11px; color:var(--muted); line-height:1.7; }
+.feed { display:flex; flex-direction:column; gap:8px; overflow:auto; max-height:260px; }
 .feed div {
-  padding:9px;
-  border-left:2px solid var(--cyan);
-  background:#00e5ff0b;
-  font-size:11px;
-  overflow-wrap:anywhere;
+  padding:9px; border-left:2px solid var(--cyan);
+  background:#00e5ff0b; font-size:11px; overflow-wrap:anywhere;
 }
 .composer {
-  grid-column:2/4;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:12px;
+  grid-column:2/4; display:flex; align-items:center; gap:9px; padding:12px;
   background:linear-gradient(90deg,#0a1f38,#0b2644);
-  border:1px solid #00e5ff40;
-  border-radius:14px;
+  border:1px solid #00e5ff40; border-radius:14px;
 }
 .composer input {
-  flex:1;
-  min-width:0;
-  background:#0005;
-  border:1px solid #00e5ff40;
-  border-radius:30px;
-  padding:14px 16px;
-  color:white;
-  outline:none;
+  flex:1; min-width:0; background:#0005; border:1px solid #00e5ff40;
+  border-radius:30px; padding:14px 16px; color:white; outline:none;
 }
-.composer input:focus{border-color:var(--cyan)}
+.composer input:focus { border-color:var(--cyan); }
 .btn {
-  padding:12px 15px;
-  border:1px solid #00e5ff55;
-  border-radius:24px;
-  color:var(--cyan);
-  background:#031522;
-  font-weight:bold;
-  font-size:11px;
+  padding:12px 15px; border:1px solid #00e5ff55; border-radius:24px;
+  color:var(--cyan); background:#031522; font-weight:bold; font-size:11px;
 }
 .btn.primary {
   background:linear-gradient(90deg,#00e5ff,#0a84ff);
-  color:#00131f;
-  border:0;
+  color:#00131f; border:0;
 }
-#chat {
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  max-height:240px;
-  overflow:auto;
-  padding:3px;
-}
+#chat { display:flex; flex-direction:column; gap:8px; max-height:240px; overflow:auto; padding:3px; }
 .msg {
-  padding:10px 12px;
-  border-radius:8px;
-  font-size:12px;
-  line-height:1.6;
-  overflow-wrap:anywhere;
-  white-space:pre-wrap;
+  padding:10px 12px; border-radius:8px; font-size:12px;
+  line-height:1.6; overflow-wrap:anywhere; white-space:pre-wrap;
 }
-.msg.user {
-  align-self:flex-end;
-  background:#00e5ff1c;
-  border:1px solid #00e5ff44;
-}
-.msg.bot {
-  align-self:flex-start;
-  background:#ffffff0b;
-  border:1px solid #ffffff12;
-}
-.msg strong{color:white}
+.msg.user { align-self:flex-end; background:#00e5ff1c; border:1px solid #00e5ff44; }
+.msg.bot { align-self:flex-start; background:#ffffff0b; border:1px solid #ffffff12; }
+.msg strong { color:#fff; font-weight:800; }
+.msg em { color:#d9f5ff; }
 .msg-label {
-  display:block;
-  color:var(--cyan);
-  font-size:9px;
-  letter-spacing:1px;
-  margin-bottom:5px;
+  display:block; color:var(--cyan); font-size:9px;
+  letter-spacing:1px; margin-bottom:5px;
 }
-#chat p{margin:5px 0}
-#chat ul,#chat ol{padding-left:20px}
-#chat code{color:#ffd780}
-#mic.listening{color:var(--red);border-color:var(--red)}
-#status{color:var(--muted)}
-@media(max-width:1100px){
-  body{overflow:auto}
-  .app {
-    height:auto;
-    min-height:100vh;
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto;
-  }
-  .topbar,.sidebar,.center,.right,.composer {
-    grid-column:1;
-    grid-row:auto;
-  }
-  .sidebar{overflow:visible}
-  .menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .center{overflow:visible;grid-template-rows:260px auto auto}
-  .right{overflow:visible}
-  .composer{flex-wrap:wrap}
-  .composer input{flex-basis:100%}
+#chat p { margin:5px 0; }
+#chat ul,#chat ol { padding-left:20px; }
+#chat code { color:#ffd780; background:#0004; padding:1px 4px; border-radius:4px; }
+#mic.listening { color:var(--red); border-color:var(--red); }
+#status { color:var(--muted); }
+@media(max-width:1100px) {
+  body { overflow:auto; }
+  .app { height:auto; min-height:100vh; grid-template-columns:minmax(0,1fr); grid-template-rows:auto; }
+  .topbar,.sidebar,.center,.right,.composer { grid-column:1; grid-row:auto; }
+  .sidebar { overflow:visible; }
+  .menu { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .center { overflow:visible; grid-template-rows:260px auto auto; }
+  .right { overflow:visible; }
+  .composer { flex-wrap:wrap; }
+  .composer input { flex-basis:100%; }
 }
-@media(max-width:560px){
-  .grid-3{grid-template-columns:1fr}
-  .topbar{padding:10px;flex-wrap:wrap}
-  .time{font-size:12px}
-  .menu button{padding:9px;font-size:11px}
-  .composer .btn{flex:1}
-  .ring{width:200px;height:200px}
-  .ring.ring2{width:240px;height:240px}
+@media(max-width:560px) {
+  .grid-3 { grid-template-columns:1fr; }
+  .topbar { padding:10px; flex-wrap:wrap; }
+  .time { font-size:12px; }
+  .menu button { padding:9px; font-size:11px; }
+  .composer .btn { flex:1; }
+  .ring { width:200px; height:200px; }
+  .ring.ring2 { width:240px; height:240px; }
 }
 </style>
 </head>
 
 <body>
 <div class="app">
-
   <header class="topbar">
     <span class="badge" id="connection">● VERIFICANDO SISTEMA</span>
     <div class="time" id="clock">--:--:--</div>
@@ -326,7 +186,6 @@ button:disabled{opacity:.5;cursor:wait}
 
   <aside class="sidebar">
     <div class="logo">JARBISS<span>PERSONAL COMMAND CENTER</span></div>
-
     <nav class="menu" id="menu">
       <button class="active" data-target="command">◈ Central de Comando</button>
       <button data-target="ai">◉ Núcleo de IA</button>
@@ -337,7 +196,6 @@ button:disabled{opacity:.5;cursor:wait}
       <button data-target="notes">▤ Anotações</button>
       <button data-target="system">⚙ Sistema</button>
     </nav>
-
     <section class="card">
       <h3>ESTADO DO SISTEMA</h3>
       <div class="pill">Interface: <b>ONLINE</b></div>
@@ -349,8 +207,7 @@ button:disabled{opacity:.5;cursor:wait}
 
   <main class="center" id="command">
     <section class="card hero" id="ai">
-      <div class="ring"></div>
-      <div class="ring ring2"></div>
+      <div class="ring"></div><div class="ring ring2"></div>
       <div class="core" id="orb">JARBISS</div>
       <div class="hero-label">◈ AI CORE • CENTRAL DE COMANDO ◈</div>
     </section>
@@ -383,14 +240,12 @@ button:disabled{opacity:.5;cursor:wait}
         <button class="btn" id="showHistory">VER HISTÓRICO</button>
         <button class="btn" id="clearHistory">APAGAR HISTÓRICO</button>
       </div>
-
       <div class="card" id="tasks">
         <h3>COMANDOS RÁPIDOS</h3>
         <button class="btn quick" data-message="JARBISS, apresente um diagnóstico do seu estado atual.">Diagnóstico</button>
         <button class="btn quick" data-message="JARBISS, ajude-me a organizar minhas tarefas de hoje.">Organizar tarefas</button>
         <button class="btn quick" data-message="JARBISS, resuma as nossas capacidades atuais.">Capacidades</button>
       </div>
-
       <div class="card" id="notes">
         <h3>BLOCO DE NOTAS</h3>
         <p class="small-text" id="notesPreview">Nenhuma anotação salva.</p>
@@ -420,14 +275,12 @@ button:disabled{opacity:.5;cursor:wait}
     <button class="btn" id="voice">🔊 VOZ: OFF</button>
     <button class="btn" id="mic">🎙️</button>
   </section>
-
 </div>
 
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-
 const input = $("message");
 const sendButton = $("send");
 const chat = document.createElement("div");
@@ -487,7 +340,6 @@ function saveHistory(text, sender) {
   } catch {
     logEvent("Não foi possível salvar o histórico local.");
   }
-
   updateMemory();
 }
 
@@ -499,16 +351,61 @@ function escapeHTML(text) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
+/*
+ * Formatação segura de Markdown básico.
+ * Primeiro escapamos HTML para impedir que uma resposta da IA
+ * seja interpretada como código HTML. Depois aplicamos estilos.
+ */
 function formatText(text) {
-  return escapeHTML(String(text))
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/__(.+?)__/g, "<strong>$1</strong>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
+  let result = escapeHTML(text);
+
+  // Preserva blocos de código antes de tratar o restante do texto.
+  const codeBlocks = [];
+  result = result.replace(/```([\s\S]*?)```/g, (_, code) => {
+    const index = codeBlocks.length;
+    codeBlocks.push("<pre><code>" + code.trim() + "</code></pre>");
+    return "%%CODEBLOCK" + index + "%%";
+  });
+
+  // Código em linha.
+  const inlineCodes = [];
+  result = result.replace(/`([^`\n]+)`/g, (_, code) => {
+    const index = inlineCodes.length;
+    inlineCodes.push("<code>" + code + "</code>");
+    return "%%INLINECODE" + index + "%%";
+  });
+
+  // Títulos Markdown.
+  result = result.replace(
+    /^#{1,6}\s+(.+)$/gm,
+    "<strong>$1</strong>"
+  );
+
+  // Negrito: **texto** e __texto__.
+  result = result
+    .replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/__([\s\S]+?)__/g, "<strong>$1</strong>");
+
+  // Itálico simples: *texto* e _texto_.
+  result = result
     .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
-    .replace(/\n/g, "<br>");
+    .replace(/(^|[\s(])_([^_\n]+)_([\s).,!?:;]|$)/g, "$1<em>$2</em>$3");
+
+  // Listas numeradas e marcadores básicos.
+  result = result.replace(/^\s*\d+[.)]\s+(.+)$/gm, "• $1");
+  result = result.replace(/^\s*[-+]\s+(.+)$/gm, "• $1");
+
+  // Quebras de linha, sem perder a formatação.
+  result = result.replace(/\n/g, "<br>");
+
+  // Restaura os trechos de código protegidos.
+  result = result.replace(/%%INLINECODE(\d+)%%/g, (_, i) => inlineCodes[Number(i)] || "");
+  result = result.replace(/%%CODEBLOCK(\d+)%%/g, (_, i) => codeBlocks[Number(i)] || "");
+
+  return result;
 }
-```
-console.log(formatText("**1. Verifique a documentação**"));
+
 function addMsg(text, who, persist = true) {
   const element = document.createElement("div");
   element.className = "msg " + who;
@@ -525,7 +422,6 @@ function addMsg(text, who, persist = true) {
   chat.scrollTop = chat.scrollHeight;
 
   if (persist) saveHistory(text, who);
-
   return element;
 }
 
@@ -533,10 +429,7 @@ function logEvent(message) {
   const item = document.createElement("div");
   item.textContent = new Date().toLocaleTimeString("pt-BR") + " — " + message;
   intel.prepend(item);
-
-  while (intel.children.length > 20) {
-    intel.lastElementChild.remove();
-  }
+  while (intel.children.length > 20) intel.lastElementChild.remove();
 }
 
 function updateClock() {
@@ -576,6 +469,7 @@ function speak(text) {
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`([^`]+)`/g, "$1")
     .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/__(.*?)__/g, "$1")
     .replace(/\*(.*?)\*/g, "$1")
     .replace(/^\s*#{1,6}\s*/gm, "")
     .replace(/^\s*[-*+]\s+/gm, "")
@@ -598,7 +492,6 @@ function speak(text) {
   utterance.onstart = () => orb.classList.add("active");
   utterance.onend = () => orb.classList.remove("active");
   utterance.onerror = () => orb.classList.remove("active");
-
   synth.speak(utterance);
 }
 
@@ -625,9 +518,7 @@ function extractReply(data) {
   if (typeof data.content === "string") return data.content;
 
   const choice = data.choices?.[0];
-  if (typeof choice?.message?.content === "string") {
-    return choice.message.content;
-  }
+  if (typeof choice?.message?.content === "string") return choice.message.content;
 
   return "";
 }
@@ -659,7 +550,6 @@ async function sendMsg() {
 
     const raw = await response.text();
     let data;
-
     try {
       data = JSON.parse(raw);
     } catch {
@@ -683,11 +573,10 @@ async function sendMsg() {
 
   } catch (error) {
     waiting.remove();
-    const message = "Não consegui consultar a IA. " +
-      error.message +
-      " Confira o servidor e a configuração da Groq.";
+    const errorMessage = "Não consegui consultar a IA. " +
+      error.message + " Confira o servidor e a configuração da Groq.";
 
-    addMsg(message, "bot");
+    addMsg(errorMessage, "bot");
     statusEl.textContent = "Falha na comunicação.";
     connection.textContent = "● VERIFICAR SERVIDOR";
     serverState.textContent = "VERIFICAR";
@@ -711,8 +600,7 @@ input.addEventListener("keydown", event => {
 });
 
 $("mic").addEventListener("click", () => {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     alert("Este navegador não oferece reconhecimento de voz nesta página. Use o Chrome e verifique a conexão.");
@@ -780,9 +668,7 @@ function loadNotes() {
 
 function updateNotesPreview() {
   const notes = loadNotes();
-  $("notesPreview").textContent = notes
-    ? notes.slice(0, 180)
-    : "Nenhuma anotação salva.";
+  $("notesPreview").textContent = notes ? notes.slice(0, 180) : "Nenhuma anotação salva.";
 }
 
 $("editNotes").addEventListener("click", () => {
@@ -808,8 +694,7 @@ $("showHistory").addEventListener("click", () => {
 
   const summary = history.slice(-20).map(item =>
     "[" + (item.time || "") + "] " +
-    (item.sender === "user" ? "VOCÊ: " : "JARBISS: ") +
-    item.text
+    (item.sender === "user" ? "VOCÊ: " : "JARBISS: ") + item.text
   ).join("\n\n");
 
   alert("HISTÓRICO RECENTE\n\n" + summary);
@@ -854,9 +739,7 @@ document.querySelectorAll(".quick").forEach(button => {
 
 document.querySelectorAll(".menu button").forEach(button => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".menu button").forEach(item =>
-      item.classList.remove("active")
-    );
+    document.querySelectorAll(".menu button").forEach(item => item.classList.remove("active"));
     button.classList.add("active");
 
     const target = document.getElementById(button.dataset.target);
@@ -871,7 +754,6 @@ document.querySelectorAll(".menu button").forEach(button => {
 async function checkServer() {
   try {
     const response = await fetch("/api/health", { cache: "no-store" });
-
     if (!response.ok) throw new Error("Servidor indisponível");
 
     connection.textContent = "● SERVIDOR ONLINE";
