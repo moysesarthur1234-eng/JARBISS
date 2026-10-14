@@ -4,33 +4,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#070b10">
-<title>JARBISS — Command Center</title>
+<meta name="theme-color" content="#05080d">
+<title>JARBISS | Central de Comando</title>
 <link rel="icon" href="data:,">
 
 <style>
 :root {
-  --bg:#070b10;
-  --panel:#101821;
-  --panel2:#151f2b;
-  --cyan:#00e5ff;
-  --blue:#087fff;
-  --amber:#ffb547;
-  --text:#e7f0f7;
-  --muted:#8193a4;
-  --green:#65ffc2;
-  --red:#ff6464;
-  --line:#31404d;
+  --bg:#05080d;
+  --panel:#0b121b;
+  --panel2:#101b27;
+  --line:#253d4d;
+  --cyan:#53efff;
+  --blue:#168cff;
+  --amber:#ffb44f;
+  --green:#72ffd0;
+  --red:#ff6279;
+  --text:#e8f7ff;
+  --muted:#8196a8;
+  --mono:Consolas,"Courier New",monospace;
 }
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+* { box-sizing:border-box }
+html { scroll-behavior:smooth }
 body {
   margin:0;
   min-height:100vh;
   background:
-    radial-gradient(ellipse at 50% -15%,#203548 0%,transparent 48%),
-    radial-gradient(ellipse at 85% 70%,#101b27 0%,transparent 45%),
-    linear-gradient(135deg,#080c11,#030609 70%);
+    radial-gradient(ellipse at 50% -10%,#15384b 0,transparent 42%),
+    radial-gradient(ellipse at 100% 80%,#102033 0,transparent 35%),
+    var(--bg);
   color:var(--text);
   font-family:Inter,"Segoe UI",Arial,sans-serif;
 }
@@ -38,36 +39,35 @@ body::before {
   content:"";
   position:fixed;
   inset:0;
+  z-index:10;
   pointer-events:none;
-  z-index:0;
-  opacity:.16;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 3px,
-      #b9d8e508 4px
-    );
+  opacity:.12;
+  background:repeating-linear-gradient(
+    0deg,transparent 0 3px,#bcefff12 4px
+  );
 }
-button,input { font:inherit; }
+button,input,textarea { font:inherit }
 button {
   cursor:pointer;
   transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;
 }
-button:hover { filter:brightness(1.12); }
-button:active { transform:scale(.98); }
-button:disabled { opacity:.5; cursor:wait; }
-
+button:hover { filter:brightness(1.14) }
+button:active { transform:scale(.98) }
+button:disabled { opacity:.5;cursor:wait }
+button:focus-visible,input:focus-visible {
+  outline:2px solid var(--cyan);
+  outline-offset:2px;
+}
 .app {
   position:relative;
   z-index:1;
   display:grid;
-  grid-template-columns:245px minmax(0,1fr) 285px;
-  grid-template-rows:62px minmax(0,1fr) auto;
+  grid-template-columns:230px minmax(0,1fr) 265px;
+  grid-template-rows:65px minmax(0,1fr) auto;
+  gap:12px;
+  padding:12px;
   min-height:100vh;
   height:100vh;
-  gap:13px;
-  padding:13px;
 }
 .topbar {
   grid-column:1/-1;
@@ -75,322 +75,414 @@ button:disabled { opacity:.5; cursor:wait; }
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  padding:0 20px;
-  background:linear-gradient(110deg,#172431eF,#0a1018f5);
-  border:1px solid #4a617366;
-  border-top:1px solid #00e5ff8c;
-  border-radius:8px;
-  box-shadow:0 7px 24px #0005,inset 0 1px #ffffff08;
+  padding:0 18px;
+  background:linear-gradient(105deg,#14232ff5,#070e16f7);
+  border:1px solid #365466;
+  border-top:2px solid var(--cyan);
+  box-shadow:0 8px 28px #0006,inset 0 1px #ffffff0a;
+  clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%);
+}
+.brand {
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:4px;
+}
+.brand span { color:var(--cyan) }
+.brand small {
+  display:block;
+  margin-top:5px;
+  font:9px var(--mono);
+  color:var(--amber);
+  letter-spacing:2px;
 }
 .badge {
   display:inline-flex;
   align-items:center;
   gap:7px;
-  font:10px Consolas,monospace;
-  letter-spacing:1px;
+  padding:8px 10px;
+  background:#06131b;
+  border:1px solid #315362;
   color:var(--cyan);
-  border:1px solid #00e5ff45;
-  padding:8px 11px;
-  background:#00e5ff09;
-  border-radius:3px;
+  font:10px var(--mono);
+  letter-spacing:.8px;
 }
-.time {
-  color:#e3f8ff;
-  font:bold 17px Consolas,monospace;
-  letter-spacing:2px;
-  text-shadow:0 0 12px #00e5ff55;
+.dot {
+  width:7px;height:7px;
+  display:inline-block;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+.clock {
+  color:#e8fbff;
+  font:bold 15px var(--mono);
+  letter-spacing:1.5px;
+  text-shadow:0 0 14px #53efff66;
 }
 .sidebar,.right {
   min-height:0;
   overflow:auto;
   display:flex;
   flex-direction:column;
-  gap:13px;
+  gap:12px;
   scrollbar-width:thin;
-  scrollbar-color:#344958 transparent;
+  scrollbar-color:#294653 transparent;
 }
 .sidebar {
   grid-row:2/4;
-  padding:15px;
-  background:linear-gradient(160deg,#151f29,#0a1017 80%);
-  border:1px solid #344552;
-  border-radius:8px;
-  box-shadow:inset 0 1px #ffffff0a,5px 8px 25px #0004;
+  padding:14px;
+  background:linear-gradient(160deg,#101c27,#060b11);
+  border:1px solid #2a4554;
+  box-shadow:inset 0 1px #ffffff08,5px 8px 24px #0004;
 }
 .logo {
-  font-weight:900;
-  letter-spacing:5px;
-  color:#e4f7ff;
-  font-size:24px;
-  text-shadow:0 0 16px #00dfff52;
-  margin:8px 0 5px;
+  font-size:27px;
+  font-weight:950;
+  letter-spacing:4px;
+  text-shadow:0 0 18px #53efff55;
+  margin:7px 0;
 }
 .logo span {
   display:block;
-  font-size:9px;
-  letter-spacing:2.5px;
-  color:var(--amber);
   margin-top:8px;
+  color:var(--amber);
+  font:9px var(--mono);
+  letter-spacing:1.6px;
 }
+.operator {
+  padding:10px;
+  margin:8px 0;
+  background:#060d13;
+  border:1px solid #203744;
+  color:var(--muted);
+  font:10px/1.9 var(--mono);
+}
+.operator b { color:var(--green);font-weight:500 }
 .menu {
   display:flex;
   flex-direction:column;
   gap:5px;
-  margin:16px 0 5px;
+  margin:12px 0;
 }
 .menu button {
-  position:relative;
+  padding:12px 10px;
   text-align:left;
-  padding:12px 11px;
+  background:#ffffff03;
+  color:#9eb2c0;
   border:1px solid transparent;
   border-left:2px solid transparent;
-  border-radius:3px;
-  background:#ffffff03;
-  color:#9baebe;
   font-size:12px;
 }
 .menu button.active,.menu button:hover {
-  background:linear-gradient(90deg,#00e5ff17,#00e5ff03);
-  border-color:#00e5ff22;
+  color:white;
+  border-color:#254e60;
   border-left-color:var(--cyan);
-  color:#effcff;
-  box-shadow:inset 12px 0 20px -20px var(--cyan);
+  background:linear-gradient(90deg,#00e5ff19,transparent);
+  box-shadow:inset 15px 0 20px -22px var(--cyan);
 }
-.card {
+.panel {
   position:relative;
   min-width:0;
-  padding:15px;
-  background:
-    linear-gradient(135deg,#18232fef,#0c131cef 72%);
-  border:1px solid #394957;
-  border-radius:5px;
-  box-shadow:0 8px 22px #0003,inset 0 1px #ffffff09;
+  padding:14px;
+  background:linear-gradient(145deg,#111e2af5,#080f16fa 75%);
+  border:1px solid #2b4555;
+  box-shadow:inset 0 1px #ffffff08,0 8px 22px #0003;
 }
-.card::before {
+.panel::before {
   content:"";
   position:absolute;
-  top:-1px;
-  left:12px;
-  width:38px;
-  height:2px;
+  top:-1px;left:13px;
+  width:42px;height:2px;
   background:var(--cyan);
-  box-shadow:0 0 8px #00e5ff77;
+  box-shadow:0 0 10px var(--cyan);
 }
-.card h3 {
-  margin:0 0 14px;
-  font:11px Consolas,monospace;
-  letter-spacing:1.5px;
+.panel h3 {
+  margin:0 0 13px;
   color:var(--cyan);
+  font:11px var(--mono);
+  letter-spacing:1.4px;
 }
 .pill {
-  padding:10px;
-  margin-bottom:7px;
-  background:linear-gradient(90deg,#ffffff07,#ffffff02);
+  margin:6px 0;
+  padding:9px;
+  background:linear-gradient(90deg,#ffffff08,transparent);
   border:1px solid #ffffff0c;
-  border-left:2px solid #526676;
-  border-radius:2px;
+  border-left:2px solid #38586a;
   font-size:11px;
   overflow-wrap:anywhere;
 }
-.pill b { color:var(--green); }
-.small-text {
-  font-size:11px;
+.pill b { color:var(--green) }
+.small {
   color:var(--muted);
-  line-height:1.8;
+  font-size:11px;
+  line-height:1.75;
   overflow-wrap:anywhere;
+}
+.meter {
+  height:4px;
+  margin:12px 0;
+  background:#192b36;
+  overflow:hidden;
+}
+.meter span {
+  display:block;
+  height:100%;
+  width:72%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  box-shadow:0 0 12px var(--cyan);
+  animation:meterPulse 3s ease-in-out infinite alternate;
 }
 .center {
-  display:grid;
-  grid-template-rows:minmax(250px,1.1fr) auto minmax(180px,.8fr);
-  gap:13px;
   min-height:0;
   overflow:auto;
+  display:grid;
+  grid-template-rows:minmax(300px,1.15fr) auto minmax(210px,.85fr);
+  gap:12px;
   scrollbar-width:thin;
-  scrollbar-color:#344958 transparent;
+  scrollbar-color:#294653 transparent;
 }
 .hero {
   position:relative;
   display:grid;
   place-items:center;
+  min-height:300px;
   overflow:hidden;
-  min-height:250px;
+  isolation:isolate;
   background:
-    radial-gradient(ellipse at center,#17304255,transparent 52%),
-    linear-gradient(145deg,#111c27,#070c12);
+    radial-gradient(ellipse at center,#16445b8c,transparent 52%),
+    linear-gradient(145deg,#0c1924,#050a10);
 }
-.hero::before,.hero::after {
+.hero::before {
   content:"";
   position:absolute;
-  width:85%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,#00e5ff44,transparent);
-  left:7.5%;
+  inset:0;
+  opacity:.28;
+  background:
+    linear-gradient(90deg,transparent 49.8%,#53efff24 50%,transparent 50.2%),
+    linear-gradient(transparent 49.8%,#53efff24 50%,transparent 50.2%),
+    repeating-linear-gradient(90deg,transparent 0 35px,#53efff0b 36px),
+    repeating-linear-gradient(0deg,transparent 0 35px,#53efff0b 36px);
+  mask-image:radial-gradient(ellipse,#000,transparent 75%);
 }
-.hero::before { top:18%; }
-.hero::after { bottom:18%; }
-
-.hero::marker { display:none; }
-
-.ring {
-  position:absolute;
-  width:225px;
-  height:225px;
-  border:1px dashed #00e5ff66;
-  border-radius:50%;
-  animation:spin 24s linear infinite;
-  pointer-events:none;
-}
-.ring::before {
+.hero::after {
   content:"";
   position:absolute;
   inset:12px;
-  border:1px solid #00e5ff1c;
+  border:1px solid #2d5262;
+  pointer-events:none;
+}
+.hero-info {
+  position:absolute;
+  top:22px;
+  left:23px;
+  color:var(--muted);
+  font:10px/1.8 var(--mono);
+}
+.hero-info b { color:var(--cyan);font-weight:500 }
+.hero-info.right-info {
+  left:auto;
+  right:23px;
+  text-align:right;
+}
+.reactor {
+  position:relative;
+  width:280px;
+  height:280px;
+  max-width:70vw;
+  display:grid;
+  place-items:center;
+}
+.orbit {
+  position:absolute;
   border-radius:50%;
+  pointer-events:none;
 }
-.ring.ring2 {
-  width:285px;
-  height:285px;
-  border:1px solid #6b8c9b26;
-  border-top:2px solid var(--cyan);
-  border-bottom:2px solid var(--amber);
-  animation:spinReverse 17s linear infinite;
+.orbit.one {
+  inset:4px;
+  border:1px dashed #53efff99;
+  animation:spin 22s linear infinite;
 }
-.ring.ring2::before {
+.orbit.two {
+  inset:21px;
+  border:1px solid #54c9ed55;
+  border-top:3px solid var(--cyan);
+  border-bottom:3px solid var(--amber);
+  animation:reverseSpin 15s linear infinite;
+}
+.orbit.three {
+  inset:42px;
+  border:1px dashed #ffb45480;
+  animation:spin 11s linear infinite;
+}
+.orbit.four {
+  inset:59px;
+  border:1px solid #53efff3d;
+  box-shadow:0 0 24px #00cfff15,inset 0 0 24px #00cfff15;
+}
+.orbit.one::before,.orbit.one::after {
   content:"";
   position:absolute;
-  inset:20px;
-  border:1px dashed #ffb54755;
+  width:8px;height:8px;
   border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
+}
+.orbit.one::before { top:15%;left:13% }
+.orbit.one::after {
+  right:7%;bottom:25%;
+  background:var(--amber);
+  box-shadow:0 0 15px var(--amber);
 }
 .core {
   position:relative;
-  width:128px;
-  height:128px;
-  border:1px solid #a6f6ff;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 35% 25%,#fff 0%,#a8f6ff 7%,#42d9ff 18%,#0873a9 35%,#102839 62%,#050b12 75%);
-  box-shadow:
-    0 0 18px #00e5ff9c,
-    0 0 45px #00e5ff47,
-    inset 0 0 24px #00e5ff40,
-    inset 0 0 0 7px #07121b;
+  z-index:2;
+  width:122px;
+  height:122px;
   display:grid;
   place-items:center;
+  border-radius:50%;
+  border:1px solid #c4fbff;
+  background:radial-gradient(circle at 33% 22%,#fff 0,#bafaff 5%,#49e8ff 17%,#0876aa 36%,#102a3c 61%,#040a10 77%);
+  box-shadow:0 0 20px #53efffbb,0 0 65px #00bfff66,inset 0 0 25px #53efff66,inset 0 0 0 8px #07121b;
   color:white;
-  font:900 13px Consolas,monospace;
+  font:900 12px var(--mono);
   letter-spacing:2px;
   text-shadow:0 0 12px var(--cyan);
-  z-index:1;
-  transition:box-shadow .3s,transform .3s;
   animation:corePulse 4s ease-in-out infinite;
+  transition:box-shadow .3s,transform .3s;
 }
 .core::before {
   content:"";
   position:absolute;
-  inset:-8px;
-  border:1px solid #00e5ff35;
+  inset:-10px;
+  border:1px solid #53efff55;
   border-radius:50%;
+  border-left-color:transparent;
+  border-right-color:transparent;
+  animation:reverseSpin 8s linear infinite;
 }
 .core.active {
-  box-shadow:0 0 35px var(--cyan),0 0 100px #00e5ff99,inset 0 0 30px #00e5ff80;
-  transform:scale(1.035);
+  transform:scale(1.05);
+  box-shadow:0 0 38px var(--cyan),0 0 100px #00e5ffad,inset 0 0 30px #00e5ff80;
+}
+.hero-foot {
+  position:absolute;
+  bottom:42px;
+  color:#7893a3;
+  font:9px var(--mono);
+  letter-spacing:1px;
 }
 .hero-label {
   position:absolute;
-  bottom:13px;
+  bottom:18px;
   color:var(--cyan);
-  font:10px Consolas,monospace;
-  letter-spacing:2px;
   text-align:center;
+  font:10px var(--mono);
+  letter-spacing:1.5px;
 }
-@keyframes spin { to { transform:rotate(360deg); } }
-@keyframes spinReverse { to { transform:rotate(-360deg); } }
-@keyframes corePulse {
-  0%,100% { filter:brightness(.93); }
-  50% { filter:brightness(1.15); }
-}
-.grid-3 {
+.metrics {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:13px;
+  gap:12px;
+}
+.metric {
+  min-width:0;
+  padding:14px;
+  background:linear-gradient(145deg,#101c27,#070e14);
+  border:1px solid #294554;
+}
+.metric .caption {
+  color:var(--muted);
+  font:9px var(--mono);
+  letter-spacing:1px;
+}
+.metric .value {
+  margin:7px 0;
+  font:22px var(--mono);
+  overflow-wrap:anywhere;
+}
+.cyan { color:var(--cyan) }
+.dual {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:12px;
 }
 .feed {
   display:flex;
   flex-direction:column;
-  gap:8px;
-  overflow:auto;
+  gap:7px;
   max-height:300px;
+  overflow:auto;
 }
 .feed div {
-  padding:10px;
+  padding:9px;
   border-left:2px solid var(--amber);
-  background:linear-gradient(90deg,#ffb5470c,transparent);
-  font:11px/1.6 Consolas,monospace;
-  color:#afbdc9;
+  background:linear-gradient(90deg,#ffb4540d,transparent);
+  color:#adbfca;
+  font:10px/1.6 var(--mono);
   overflow-wrap:anywhere;
 }
 .composer {
   grid-column:2/4;
   display:flex;
   align-items:center;
-  gap:9px;
-  padding:13px;
-  background:linear-gradient(100deg,#131e29,#0b121b);
-  border:1px solid #40515f;
-  border-top:1px solid #00e5ff68;
-  border-radius:6px;
-  box-shadow:0 -5px 25px #0003;
+  gap:8px;
+  padding:11px;
+  background:linear-gradient(100deg,#111e29,#080f16);
+  border:1px solid #355361;
+  border-top:2px solid #53efff80;
+  box-shadow:0 -5px 24px #0004;
 }
 .composer input {
   flex:1;
   min-width:0;
-  background:#060b10;
-  border:1px solid #354856;
-  border-radius:3px;
-  padding:14px 16px;
+  padding:14px;
   color:white;
+  background:#03080d;
+  border:1px solid #2c4958;
   outline:none;
 }
-.composer input::placeholder { color:#647888; }
 .composer input:focus {
   border-color:var(--cyan);
-  box-shadow:0 0 0 2px #00e5ff12;
+  box-shadow:0 0 0 2px #53efff15;
 }
+.composer input::placeholder { color:#627c8d }
 .btn {
-  padding:12px 14px;
-  border:1px solid #4b6372;
-  border-radius:3px;
-  color:#b8e8f1;
-  background:linear-gradient(180deg,#1a2a37,#0d1720);
-  font-weight:bold;
-  font-size:10px;
-  letter-spacing:.5px;
+  padding:11px 12px;
+  color:#c2eff7;
+  background:linear-gradient(180deg,#192b38,#09131c);
+  border:1px solid #3b5868;
+  font:10px var(--mono);
+  letter-spacing:.3px;
 }
 .btn:hover {
   border-color:var(--cyan);
-  color:white;
-  box-shadow:0 0 12px #00e5ff14;
+  box-shadow:0 0 13px #53efff20;
 }
 .btn.primary {
-  background:linear-gradient(120deg,#00d5e9,#087fff);
-  color:#001017;
-  border:1px solid #6af3ff;
-  box-shadow:0 0 16px #00e5ff25;
+  color:#021018;
+  font-weight:900;
+  background:linear-gradient(120deg,var(--cyan),var(--blue));
+  border-color:#a9f8ff;
+}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
 }
 #chat {
   display:flex;
   flex-direction:column;
   gap:8px;
-  max-height:260px;
+  max-height:360px;
   overflow:auto;
   padding:3px;
   scrollbar-width:thin;
-  scrollbar-color:#344958 transparent;
 }
 .msg {
-  padding:11px 13px;
-  border-radius:4px;
+  max-width:100%;
+  padding:10px 12px;
+  border-radius:3px;
   font-size:12px;
   line-height:1.7;
   overflow-wrap:anywhere;
@@ -408,22 +500,21 @@ button:disabled { opacity:.5; cursor:wait; }
   border:1px solid #ffffff12;
   border-left:2px solid #7d91a0;
 }
-.msg strong { color:#fff; font-weight:800; }
-.msg em { color:#d9f5ff; }
 .msg-label {
   display:block;
-  color:var(--cyan);
-  font:9px Consolas,monospace;
-  letter-spacing:1.5px;
   margin-bottom:5px;
+  color:var(--cyan);
+  font:9px var(--mono);
+  letter-spacing:1.5px;
 }
-#chat p { margin:5px 0; }
-#chat ul,#chat ol { padding-left:20px; }
+.msg strong { color:white }
+.msg em { color:#d9f5ff }
+#chat p { margin:5px 0 }
+#chat ul,#chat ol { padding-left:20px }
 #chat code {
   color:#ffd780;
   background:#0005;
   padding:2px 5px;
-  border-radius:2px;
 }
 #chat pre {
   white-space:pre-wrap;
@@ -431,167 +522,224 @@ button:disabled { opacity:.5; cursor:wait; }
   background:#03080d;
   border:1px solid #344957;
   padding:10px;
-  border-radius:4px;
 }
 #mic.listening {
   color:var(--red);
   border-color:var(--red);
-  box-shadow:0 0 12px #ff646433;
+  box-shadow:0 0 12px #ff627944;
 }
-#status { color:var(--muted); }
-#recent { white-space:pre-line; overflow-wrap:anywhere; }
-
-@media(max-width:1100px) {
-  body { overflow:auto; }
+#recent { white-space:pre-line;overflow-wrap:anywhere }
+#status { color:var(--muted) }
+@keyframes spin { to { transform:rotate(360deg) } }
+@keyframes reverseSpin { to { transform:rotate(-360deg) } }
+@keyframes corePulse {
+  0%,100% { filter:brightness(.9) }
+  50% { filter:brightness(1.2) }
+}
+@keyframes meterPulse {
+  from { opacity:.65 }
+  to { opacity:1 }
+}
+@media(max-width:1120px) {
+  body { overflow:auto }
   .app {
     height:auto;
     min-height:100vh;
     grid-template-columns:minmax(0,1fr);
     grid-template-rows:auto;
-    padding:10px;
-    gap:10px;
+    padding:9px;
+    gap:9px;
   }
   .topbar,.sidebar,.center,.right,.composer {
     grid-column:1;
     grid-row:auto;
   }
-  .sidebar { overflow:visible; }
-  .menu { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .center {
-    overflow:visible;
-    grid-template-rows:280px auto auto;
-  }
-  .right { overflow:visible; }
-  .composer { flex-wrap:wrap; }
-  .composer input { flex-basis:100%; }
+  .sidebar,.right { overflow:visible }
+  .menu { display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) }
+  .center { overflow:visible;grid-template-rows:320px auto auto }
+  .composer { flex-wrap:wrap }
+  .composer input { flex-basis:100% }
 }
-@media(max-width:560px) {
-  .grid-3 { grid-template-columns:1fr; }
-  .topbar { padding:12px; flex-wrap:wrap; }
-  .time { font-size:12px; letter-spacing:1px; }
-  .badge { font-size:9px; padding:7px; }
-  .sidebar { padding:12px; }
-  .logo { font-size:22px; }
-  .menu button { padding:10px 8px; font-size:10px; }
-  .center { grid-template-rows:260px auto auto; }
-  .hero { min-height:260px; }
-  .ring { width:195px; height:195px; }
-  .ring.ring2 { width:245px; height:245px; }
-  .core { width:112px; height:112px; }
-  .composer { gap:7px; padding:10px; }
-  .composer .btn { flex:1; padding:12px 7px; }
-  .composer input { flex-basis:100%; }
-  .card { padding:13px; }
+@media(max-width:600px) {
+  .topbar { flex-wrap:wrap;padding:11px }
+  .brand { font-size:13px;letter-spacing:3px }
+  .clock { font-size:12px;letter-spacing:1px }
+  .badge { font-size:9px;padding:7px }
+  .logo { font-size:23px }
+  .center { grid-template-rows:285px auto auto }
+  .hero { min-height:285px }
+  .reactor { width:240px;height:240px }
+  .core { width:105px;height:105px }
+  .hero-info { top:18px;left:17px;font-size:8px }
+  .hero-info.right-info { right:17px }
+  .hero-foot { bottom:42px;font-size:8px }
+  .hero-label { font-size:9px }
+  .metrics,.dual { grid-template-columns:minmax(0,1fr) }
+  .composer { gap:6px;padding:8px }
+  .composer .btn { flex:1;padding:12px 7px }
+  .panel { padding:12px }
 }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after {
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    scroll-behavior:auto !important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
   }
 }
 </style>
 </head>
-
 <body>
 <div class="app">
-  <header class="topbar">
-    <span class="badge" id="connection">● VERIFICANDO SISTEMA</span>
-    <div class="time" id="clock">--:--:--</div>
-    <span class="badge">JARBISS • OPERADOR</span>
-  </header>
 
-  <aside class="sidebar">
-    <div class="logo">JARBISS<span>PERSONAL COMMAND CENTER</span></div>
-    <nav class="menu" id="menu">
-      <button class="active" data-target="command">◈ Central de Comando</button>
-      <button data-target="ai">◉ Núcleo de IA</button>
-      <button data-target="agents">◎ Agentes</button>
-      <button data-target="tasks">☰ Tarefas</button>
-      <button data-target="memory">◍ Memória</button>
-      <button data-target="conversations">◑ Conversas</button>
-      <button data-target="notes">▤ Anotações</button>
-      <button data-target="system">⚙ Sistema</button>
-    </nav>
-    <section class="card">
-      <h3>ESTADO DO SISTEMA</h3>
-      <div class="pill">Interface: <b>ONLINE</b></div>
-      <div class="pill">Servidor: <b id="serverState">VERIFICANDO</b></div>
-      <div class="pill">Voz: <b id="voiceState">DESLIGADA</b></div>
-      <div id="status" class="small-text">Aguardando comando.</div>
-    </section>
-  </aside>
+<header class="topbar">
+  <div class="brand">JAR<span>BISS</span><small>PERSONAL COMMAND CENTER</small></div>
+  <span class="badge" id="connection"><i class="dot"></i> VERIFICANDO SISTEMA</span>
+  <div class="clock" id="clock">--:--:--</div>
+  <span class="badge">OPERADOR • LOCAL</span>
+</header>
 
-  <main class="center" id="command">
-    <section class="card hero" id="ai">
-      <div class="ring"></div><div class="ring ring2"></div>
+<aside class="sidebar">
+  <div class="logo">JARBISS<span>INTELLIGENCE SYSTEM</span></div>
+
+  <div class="operator">
+    OPERADOR: <b>RECONHECIDO</b><br>
+    PROTOCOLO: <b>ATIVO</b><br>
+    SESSÃO: <b>LOCAL</b>
+  </div>
+
+  <nav class="menu">
+    <button class="active" data-target="command">◈ Central de Comando</button>
+    <button data-target="ai">◉ Núcleo de IA</button>
+    <button data-target="agents">◎ Agentes</button>
+    <button data-target="tasks">☰ Tarefas</button>
+    <button data-target="memory">◍ Memória</button>
+    <button data-target="conversations">◑ Conversas</button>
+    <button data-target="notes">▤ Anotações</button>
+    <button data-target="system">⚙ Sistema</button>
+  </nav>
+
+  <section class="panel">
+    <h3>ESTADO OPERACIONAL</h3>
+    <div class="pill">Interface <b>ONLINE</b></div>
+    <div class="pill">Servidor <b id="serverState">VERIFICANDO</b></div>
+    <div class="pill">Voz <b id="voiceState">DESLIGADA</b></div>
+    <div class="meter"><span></span></div>
+    <div class="small" id="status">Central pronta para receber comandos.</div>
+  </section>
+
+  <section class="panel" id="tasks">
+    <h3>COMANDOS RÁPIDOS</h3>
+    <button class="btn quick" data-message="JARBISS, apresente um diagnóstico do seu estado atual.">DIAGNÓSTICO</button>
+    <button class="btn quick" data-message="JARBISS, ajude-me a organizar minhas tarefas de hoje.">ORGANIZAR TAREFAS</button>
+    <button class="btn quick" data-message="JARBISS, resuma as nossas capacidades atuais.">CAPACIDADES</button>
+  </section>
+</aside>
+
+<main class="center" id="command">
+  <section class="panel hero" id="ai">
+    <div class="hero-info">
+      AI CORE // <b>ONLINE STANDBY</b><br>
+      INTERFACE NEURAL • V.02
+    </div>
+    <div class="hero-info right-info">
+      SINAL: <b id="coreSignal">ESTÁVEL</b><br>
+      PROTOCOLO: <b>J-B/01</b>
+    </div>
+
+    <div class="reactor" aria-label="Núcleo holográfico do JARBISS">
+      <div class="orbit one"></div>
+      <div class="orbit two"></div>
+      <div class="orbit three"></div>
+      <div class="orbit four"></div>
       <div class="core" id="orb">JARBISS</div>
-      <div class="hero-label">◈ AI CORE • CENTRAL DE COMANDO ◈</div>
-    </section>
+    </div>
 
-    <section class="grid-3" id="agents">
-      <div class="card">
-        <h3>NÚCLEO DE IA</h3>
-        <div class="pill">Chat: <b>Disponível</b></div>
-        <div class="pill">Servidor: <b id="aiState">Verificando</b></div>
-        <div class="pill">Histórico: <b id="memoryCount">0 mensagens</b></div>
-      </div>
-      <div class="card">
-        <h3>AGENTES</h3>
-        <div class="pill">Interface: ativa</div>
-        <div class="pill">Voz: conforme suporte do navegador</div>
-        <div class="pill">Outros agentes: não configurados</div>
-      </div>
-      <div class="card" id="system">
-        <h3>MONITOR DO SISTEMA</h3>
-        <div class="pill">API: <b id="apiState">Aguardando teste</b></div>
-        <div class="pill">Armazenamento: <b id="storageState">Local</b></div>
-        <div class="pill">Navegador: <b id="browserState">Ativo</b></div>
-      </div>
-    </section>
+    <div class="hero-foot">NEURAL INTERFACE • SECURE LOCAL SESSION</div>
+    <div class="hero-label">◈ NÚCLEO DE COMANDO • SISTEMA EM ESPERA ◈</div>
+  </section>
 
-    <section class="grid-3">
-      <div class="card" id="memory">
-        <h3>MEMÓRIA LOCAL</h3>
-        <p class="small-text">As mensagens desta interface são guardadas neste navegador.</p>
+  <section class="metrics" id="agents">
+    <div class="metric">
+      <div class="caption">ESTADO DA INTELIGÊNCIA</div>
+      <div class="value cyan" id="aiState">VERIFICANDO</div>
+      <div class="caption">CONEXÃO COM SERVIDOR</div>
+    </div>
+    <div class="metric">
+      <div class="caption">MEMÓRIA DE CONVERSA</div>
+      <div class="value" id="memoryCount">0</div>
+      <div class="caption">REGISTROS LOCAIS</div>
+    </div>
+    <div class="metric">
+      <div class="caption">AGENTES CONFIGURADOS</div>
+      <div class="value">01<span style="font-size:12px;color:var(--muted)"> / 04</span></div>
+      <div class="caption">OUTROS NÃO CONFIGURADOS</div>
+    </div>
+  </section>
+
+  <section class="dual">
+    <div class="panel" id="memory">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <h3>CANAL DE COMUNICAÇÃO</h3>
+        <span class="small">CHAT // 01</span>
+      </div>
+      <div id="chat" aria-live="polite"></div>
+      <div class="actions" style="margin-top:10px">
         <button class="btn" id="showHistory">VER HISTÓRICO</button>
         <button class="btn" id="clearHistory">APAGAR HISTÓRICO</button>
       </div>
-      <div class="card" id="tasks">
-        <h3>COMANDOS RÁPIDOS</h3>
-        <button class="btn quick" data-message="JARBISS, apresente um diagnóstico do seu estado atual.">Diagnóstico</button>
-        <button class="btn quick" data-message="JARBISS, ajude-me a organizar minhas tarefas de hoje.">Organizar tarefas</button>
-        <button class="btn quick" data-message="JARBISS, resuma as nossas capacidades atuais.">Capacidades</button>
-      </div>
-      <div class="card" id="notes">
-        <h3>BLOCO DE NOTAS</h3>
-        <p class="small-text" id="notesPreview">Nenhuma anotação salva.</p>
-        <button class="btn" id="editNotes">EDITAR ANOTAÇÕES</button>
-      </div>
-    </section>
-  </main>
+    </div>
 
-  <aside class="right">
-    <section class="card">
-      <h3>REGISTRO DO SISTEMA</h3>
-      <div class="feed" id="intel">
-        <div>Interface inicializada.</div>
-        <div>Aguardando verificação do servidor.</div>
-      </div>
-    </section>
-    <section class="card" id="conversations">
-      <h3>CONVERSAS RECENTES</h3>
-      <div class="small-text" id="recent">Nenhuma mensagem salva.</div>
-      <button class="btn" id="newConversation">NOVA CONVERSA</button>
-    </section>
-  </aside>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <section class="panel" id="system">
+        <h3>DIAGNÓSTICO DO SISTEMA</h3>
+        <div class="pill">API <b id="apiState">AGUARDANDO TESTE</b></div>
+        <div class="pill">Armazenamento <b id="storageState">LOCAL</b></div>
+        <div class="pill">Navegador <b id="browserState">ATIVO</b></div>
+        <div class="pill">Agentes adicionais <b>NÃO CONFIGURADOS</b></div>
+      </section>
 
-  <section class="composer">
-    <input id="message" type="text" placeholder="Fale com o JARBISS..." autocomplete="off">
-    <button class="btn primary" id="send">ENVIAR</button>
-    <button class="btn" id="voice">🔊 VOZ: OFF</button>
-    <button class="btn" id="mic">🎙️</button>
+      <section class="panel" id="notes">
+        <h3>MEMÓRIA E ANOTAÇÕES</h3>
+        <p class="small" id="notesPreview">Nenhuma anotação salva.</p>
+        <div class="actions">
+          <button class="btn" id="editNotes">EDITAR NOTAS</button>
+          <button class="btn" id="newConversation">NOVA CONVERSA</button>
+        </div>
+      </section>
+    </div>
   </section>
+</main>
+
+<aside class="right">
+  <section class="panel">
+    <h3>REGISTRO DE EVENTOS</h3>
+    <div class="feed" id="intel">
+      <div>Interface de comando inicializada.</div>
+      <div>Aguardando diagnóstico do servidor.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="conversations">
+    <h3>TRANSMISSÕES RECENTES</h3>
+    <div class="small" id="recent">Nenhuma mensagem salva.</div>
+  </section>
+
+  <section class="panel">
+    <h3>CONTROLES DE VOZ</h3>
+    <div class="pill">Síntese de voz <b id="voicePanel">DESLIGADA</b></div>
+    <div class="pill">Reconhecimento <b id="micPanel">EM ESPERA</b></div>
+    <p class="small">O microfone depende do suporte do navegador, das permissões e de uma conexão segura.</p>
+  </section>
+</aside>
+
+<section class="composer">
+  <span style="font:10px var(--mono);color:var(--cyan);white-space:nowrap">COMANDO &gt;</span>
+  <input id="message" type="text" placeholder="Transmitir comando ao JARBISS..." autocomplete="off" aria-label="Mensagem para o JARBISS">
+  <button class="btn primary" id="send">ENVIAR ↗</button>
+  <button class="btn" id="voice">🔊 VOZ: OFF</button>
+  <button class="btn" id="mic" aria-label="Ativar microfone">🎙️</button>
+</section>
+
 </div>
 
 <script>
@@ -600,11 +748,7 @@ button:disabled { opacity:.5; cursor:wait; }
 const $ = id => document.getElementById(id);
 const input = $("message");
 const sendButton = $("send");
-const chat = document.createElement("div");
-chat.id = "chat";
-chat.setAttribute("aria-live", "polite");
-$("memory").appendChild(chat);
-
+const chat = $("chat");
 const statusEl = $("status");
 const connection = $("connection");
 const serverState = $("serverState");
@@ -674,20 +818,19 @@ function formatText(text) {
   const codeBlocks = [];
 
   result = result.replace(/```([\s\S]*?)```/g, (_, code) => {
-    const index = codeBlocks.length;
+    const i = codeBlocks.length;
     codeBlocks.push("<pre><code>" + code.trim() + "</code></pre>");
-    return "%%CODEBLOCK" + index + "%%";
+    return "%%CODEBLOCK" + i + "%%";
   });
 
   const inlineCodes = [];
   result = result.replace(/`([^`\n]+)`/g, (_, code) => {
-    const index = inlineCodes.length;
+    const i = inlineCodes.length;
     inlineCodes.push("<code>" + code + "</code>");
-    return "%%INLINECODE" + index + "%%";
+    return "%%INLINECODE" + i + "%%";
   });
 
   result = result.replace(/^#{1,6}\s+(.+)$/gm, "<strong>$1</strong>");
-
   result = result
     .replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>")
     .replace(/__([\s\S]+?)__/g, "<strong>$1</strong>");
@@ -696,12 +839,14 @@ function formatText(text) {
     .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
     .replace(/(^|[\s(])_([^_\n]+)_([\s).,!?:;]|$)/g, "$1<em>$2</em>$3");
 
-  result = result.replace(/^\s*\d+[.)]\s+(.+)$/gm, "• $1");
-  result = result.replace(/^\s*[-+]\s+(.+)$/gm, "• $1");
-  result = result.replace(/\n/g, "<br>");
+  result = result
+    .replace(/^\s*\d+[.)]\s+(.+)$/gm, "• $1")
+    .replace(/^\s*[-+]\s+(.+)$/gm, "• $1")
+    .replace(/\n/g, "<br>");
 
-  result = result.replace(/%%INLINECODE(\d+)%%/g, (_, i) => inlineCodes[Number(i)] || "");
-  result = result.replace(/%%CODEBLOCK(\d+)%%/g, (_, i) => codeBlocks[Number(i)] || "");
+  result = result
+    .replace(/%%INLINECODE(\d+)%%/g, (_, i) => inlineCodes[Number(i)] || "")
+    .replace(/%%CODEBLOCK(\d+)%%/g, (_, i) => codeBlocks[Number(i)] || "");
 
   return result;
 }
@@ -712,7 +857,7 @@ function addMsg(text, who, persist = true) {
 
   const label = document.createElement("span");
   label.className = "msg-label";
-  label.textContent = who === "user" ? "VOCÊ" : "JARBISS";
+  label.textContent = who === "user" ? "OPERADOR" : "JARBISS";
 
   const content = document.createElement("div");
   content.innerHTML = formatText(String(text));
@@ -729,7 +874,10 @@ function logEvent(message) {
   const item = document.createElement("div");
   item.textContent = new Date().toLocaleTimeString("pt-BR") + " — " + message;
   intel.prepend(item);
-  while (intel.children.length > 20) intel.lastElementChild.remove();
+
+  while (intel.children.length > 20) {
+    intel.lastElementChild.remove();
+  }
 }
 
 function updateClock() {
@@ -746,17 +894,15 @@ setInterval(updateClock, 1000);
 
 function updateMemory() {
   const history = getHistory();
-  $("memoryCount").textContent = history.length + " mensagens";
+  $("memoryCount").textContent = String(history.length);
 
   const recent = history.slice(-4).reverse();
   $("recent").textContent = recent.length
     ? recent.map(item =>
-        (item.sender === "user" ? "Você: " : "JARBISS: ") +
+        (item.sender === "user" ? "Operador: " : "JARBISS: ") +
         String(item.text).slice(0, 65)
       ).join("\n\n")
     : "Nenhuma mensagem salva.";
-
-  $("recent").style.whiteSpace = "pre-line";
 }
 
 function speak(text) {
@@ -785,9 +931,8 @@ function speak(text) {
   utterance.rate = 0.94;
   utterance.pitch = 0.95;
 
-  const voices = synth.getVoices();
-  const brazilianVoice = voices.find(v => /^pt-BR$/i.test(v.lang));
-  if (brazilianVoice) utterance.voice = brazilianVoice;
+  const voice = speechSynthesis.getVoices().find(v => /^pt-BR$/i.test(v.lang));
+  if (voice) utterance.voice = voice;
 
   utterance.onstart = () => orb.classList.add("active");
   utterance.onend = () => orb.classList.remove("active");
@@ -799,9 +944,10 @@ $("voice").addEventListener("click", () => {
   voiceOn = !voiceOn;
   $("voice").textContent = voiceOn ? "🔊 VOZ: ON" : "🔊 VOZ: OFF";
   voiceState.textContent = voiceOn ? "ATIVA" : "DESLIGADA";
+  $("voicePanel").textContent = voiceOn ? "ATIVA" : "DESLIGADA";
 
   if (!voiceOn && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
+    speechSynthesis.cancel();
     orb.classList.remove("active");
   } else {
     speak("JARBISS online. Estou à sua disposição, parceiro.");
@@ -819,7 +965,6 @@ function extractReply(data) {
 
   const choice = data.choices?.[0];
   if (typeof choice?.message?.content === "string") return choice.message.content;
-
   return "";
 }
 
@@ -835,6 +980,7 @@ async function sendMsg() {
   statusEl.textContent = "Consultando a inteligência...";
   connection.textContent = "● PROCESSANDO";
   orb.classList.add("active");
+  $("coreSignal").textContent = "PROCESSANDO";
 
   const waiting = addMsg("Analisando sua solicitação...", "bot", false);
 
@@ -868,18 +1014,23 @@ async function sendMsg() {
     statusEl.textContent = "Resposta recebida.";
     connection.textContent = "● SISTEMA ONLINE";
     serverState.textContent = "ONLINE";
+    $("aiState").textContent = "ONLINE";
+    $("apiState").textContent = "RESPONDENDO";
+    $("coreSignal").textContent = "ESTÁVEL";
     logEvent("Resposta da IA recebida.");
     speak(reply);
 
   } catch (error) {
     waiting.remove();
-    const errorMessage = "Não consegui consultar a IA. " +
-      error.message + " Confira o servidor e a configuração da Groq.";
-
-    addMsg(errorMessage, "bot");
+    addMsg(
+      "Não consegui consultar a IA. " + error.message +
+      " Confira o servidor e a configuração da Groq.",
+      "bot"
+    );
     statusEl.textContent = "Falha na comunicação.";
     connection.textContent = "● VERIFICAR SERVIDOR";
     serverState.textContent = "VERIFICAR";
+    $("coreSignal").textContent = "SEM SINAL";
     logEvent("Falha na comunicação com /api/chat.");
 
   } finally {
@@ -903,7 +1054,7 @@ $("mic").addEventListener("click", () => {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    alert("Este navegador não oferece reconhecimento de voz nesta página. Use o Chrome e verifique a conexão.");
+    alert("Este navegador não oferece reconhecimento de voz nesta página. Verifique o navegador e a conexão.");
     return;
   }
 
@@ -922,6 +1073,7 @@ $("mic").addEventListener("click", () => {
   micButton.classList.add("listening");
   micButton.textContent = "🔴";
   statusEl.textContent = "Microfone ativo. Pode falar.";
+  $("micPanel").textContent = "OUVINDO";
   logEvent("Reconhecimento de voz iniciado.");
 
   recognition.onresult = event => {
@@ -933,18 +1085,18 @@ $("mic").addEventListener("click", () => {
   };
 
   recognition.onerror = event => {
-    statusEl.textContent =
-      event.error === "not-allowed"
-        ? "Permita o acesso ao microfone no navegador."
-        : event.error === "no-speech"
-        ? "Nenhuma fala detectada."
-        : "Falha no reconhecimento de voz: " + event.error;
+    statusEl.textContent = event.error === "not-allowed"
+      ? "Permita o acesso ao microfone no navegador."
+      : event.error === "no-speech"
+      ? "Nenhuma fala detectada."
+      : "Falha no reconhecimento de voz: " + event.error;
   };
 
   recognition.onend = () => {
     listening = false;
     micButton.classList.remove("listening");
     micButton.textContent = "🎙️";
+    $("micPanel").textContent = "EM ESPERA";
     if (!sending) statusEl.textContent = "Sistema pronto.";
   };
 
@@ -954,6 +1106,7 @@ $("mic").addEventListener("click", () => {
     listening = false;
     micButton.classList.remove("listening");
     micButton.textContent = "🎙️";
+    $("micPanel").textContent = "EM ESPERA";
     statusEl.textContent = "Não foi possível iniciar o microfone.";
   }
 });
@@ -968,12 +1121,13 @@ function loadNotes() {
 
 function updateNotesPreview() {
   const notes = loadNotes();
-  $("notesPreview").textContent = notes ? notes.slice(0, 180) : "Nenhuma anotação salva.";
+  $("notesPreview").textContent = notes
+    ? notes.slice(0, 180)
+    : "Nenhuma anotação salva.";
 }
 
 $("editNotes").addEventListener("click", () => {
-  const current = loadNotes();
-  const result = prompt("JARBISS — BLOCO DE NOTAS\n\nEdite suas anotações:", current);
+  const result = prompt("JARBISS — BLOCO DE NOTAS\n\nEdite suas anotações:", loadNotes());
   if (result === null) return;
 
   try {
@@ -992,12 +1146,10 @@ $("showHistory").addEventListener("click", () => {
     return;
   }
 
-  const summary = history.slice(-20).map(item =>
+  alert("HISTÓRICO RECENTE\n\n" + history.slice(-20).map(item =>
     "[" + (item.time || "") + "] " +
-    (item.sender === "user" ? "VOCÊ: " : "JARBISS: ") + item.text
-  ).join("\n\n");
-
-  alert("HISTÓRICO RECENTE\n\n" + summary);
+    (item.sender === "user" ? "OPERADOR: " : "JARBISS: ") + item.text
+  ).join("\n\n"));
 });
 
 $("clearHistory").addEventListener("click", () => {
@@ -1058,15 +1210,15 @@ async function checkServer() {
 
     connection.textContent = "● SERVIDOR ONLINE";
     serverState.textContent = "ONLINE";
-    $("aiState").textContent = "Servidor acessível";
-    $("apiState").textContent = "Respondendo";
+    $("aiState").textContent = "ONLINE";
+    $("apiState").textContent = "RESPONDENDO";
     logEvent("Servidor respondeu à verificação.");
 
   } catch {
     connection.textContent = "● SERVIDOR A VERIFICAR";
     serverState.textContent = "SEM RESPOSTA";
-    $("aiState").textContent = "Não confirmado";
-    $("apiState").textContent = "Sem resposta";
+    $("aiState").textContent = "NÃO CONFIRMADO";
+    $("apiState").textContent = "SEM RESPOSTA";
     logEvent("Não foi possível verificar /api/health.");
   }
 }
