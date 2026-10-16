@@ -813,7 +813,7 @@ document.getElementById("voiceShortcut").addEventListener("click", () => {
 /* CONEXÃO COM O SERVIDOR */
 async function checkServer() {
   try {
-    const response = await fetch("/api/chat", {
+    const response = await fetch("https://jarbiss.onrender.com/api/chat", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({message: "Responda apenas: online"})
