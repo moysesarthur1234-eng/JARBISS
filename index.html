@@ -335,7 +335,7 @@ footer {
 <footer>JARBISS • SISTEMA EM DESENVOLVIMENTO</footer>
 
 <script>
-const $ = id => document.getElementById(id);
+const API_BASE = "https://jarbiss.onrender.com";
 
 function addMessage(text, type) {
   const element = document.createElement("div");
@@ -399,7 +399,7 @@ $("chatForm").addEventListener("submit", async event => {
 
   try {
     // Mantém o endpoint usado pelo servidor atual.
-    const response = await fetch("/api/chat", {
+    const response = await fetch(`${API_BASE}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message })
